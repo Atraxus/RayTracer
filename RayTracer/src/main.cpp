@@ -3,6 +3,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "glm/glm.hpp"
+
 #include <iostream>
 
 #include "Renderer.h"
@@ -11,6 +13,7 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -49,10 +52,10 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-            -0.5f, -0.5f,
-             200.5f, -0.5f,
-             200.5f,  200.5f,
-            -0.5f,  200.5f
+            -0.5f, -0.5f, 0.0f, 0.0f,
+             0.5f, -0.5f, 1.0f, 0.0f,
+             0.5f,  0.5f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 1.0f
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -61,10 +64,11 @@ int main(void)
         };
 
         VertexArray va;
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
+        VertexBuffer vb(positions, 4 * 4 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
         layout.Push<float>(2); // Layout has 2 floats (in this case the x,y coordinates); Call Push again to tell layout that there are more information per vertex
+        layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
         IndexBuffer ib(indices, 6); // create an index buffer with given indices and the number of indices
@@ -77,6 +81,12 @@ int main(void)
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 		shader.SetUniform4Matf("u_MVP", oProj);
+
+        // stuff for testing texture
+        Texture texture("res/textures/feelsgoodman.jpg");
+        texture.Bind();
+        shader.SetUniform1i("u_Texture", 0);
+
 
         // unbind all buffers and shaders and vertex array
         va.Unbind();
