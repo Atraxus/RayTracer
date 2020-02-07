@@ -52,10 +52,10 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-            -0.5f, -0.5f, 0.0f, 0.0f,
-             0.5f, -0.5f, 1.0f, 0.0f,
-             0.5f,  0.5f, 1.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f, 1.0f
+              0.0f,   0.0f, 0.0f, 0.0f,
+            500.0f,   0.0f, 1.0f, 0.0f,
+            500.0f, 500.0f, 1.0f, 1.0f,
+              0.0f, 500.0f, 0.0f, 1.0f
         };
         unsigned int indices[] = // has to be unsigned
         {
