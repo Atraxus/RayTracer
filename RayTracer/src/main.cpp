@@ -111,9 +111,8 @@ int main(void)
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
-        shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniform4Matf("u_MVP", proj*camera.worldToView());
-		shader.SetUniform4Matf("u_view", view);
+		//shader.SetUniform4Matf("u_MVP", mvp);
+		//shader.SetUniform4Matf("u_View", view);
 
         // stuff for testing texture
         Texture texture("res/textures/feelsgoodman.jpg");
@@ -138,6 +137,9 @@ int main(void)
         // ---
 
 
+        glm::vec3 translation(0, 0, 0);
+        float rotation = 0.0f;
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
@@ -150,12 +152,19 @@ int main(void)
             ImGui::NewFrame();
             // ---
 
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+            model = glm::rotate(model, rotation, glm::vec3(0, 1, 0));
+            glm::mat4 mvp = model* proj * view;
+
             shader.Bind();
+            shader.SetUniform4Matf("u_MVP", mvp);
             renderer.Draw(va, ib, shader);
             
             // --- ImGui stuff
-            float f = 0.0f;
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+            ImGui::SliderFloat("Rotation", &rotation, -1.0f, 1.0f);
+            ImGui::SliderFloat("X", &translation.x, -5.0f, 5.0f);
+            ImGui::SliderFloat("Y", &translation.y, -5.0f, 5.0f);
+            ImGui::SliderFloat("Z", &translation.z, -5.0f, 5.0f);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
