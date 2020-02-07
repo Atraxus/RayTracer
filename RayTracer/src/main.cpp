@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "glm/glm.hpp"
 
@@ -71,9 +73,14 @@ int main(void)
 
         IndexBuffer ib(indices, 6); // create an index buffer with given indices and the number of indices
 
+		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 1.0f, 150.0f);
+		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
+
+
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+		shader.SetUniform4Matf("u_MVP", oProj);
 
         // stuff for testing texture
         Texture texture("res/textures/feelsgoodman.jpg");
