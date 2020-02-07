@@ -52,14 +52,14 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-            800.0f, 200.0f, -50.0f, 0.0f, 0.0f,
-           1600.0f, 200.0f, -50.0f, 0.0f, 0.0f,
-		    800.0f, 500.0f, -50.0f, 0.0f, 0.0f,
-		   1600.0f, 500.0f, -50.0f, 0.0f, 0.0f,
-		    800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-		   1600.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-			800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
-		   1600.0f, 500.0f, -100.0f, 0.0f, 0.0f,
+           -800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
+            800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
+		   -800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
+		    800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
+		   -800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
+		    800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
+		   -800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
+		    800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -67,27 +67,27 @@ int main(void)
             0, 1, 2,
             1, 3, 2,
 			//unten
-			5, 1, 0,
-			1, 6, 5,
+			4, 1, 0,
+			5, 4, 1,
 			//links
-			0, 2, 5,
-			2, 5, 7,
+			4, 0, 2,
+			4, 2, 6,
 			//rechts
-			1, 6, 3,
-			3, 6, 8,
+			1, 5, 3,
+			3, 5, 7,
 			//oben
-			2, 3, 7,
-			3, 8, 7,
+			2, 3, 6,
+			3, 7, 6,
 			//hinten
-			5, 6, 7,
-			6, 7, 8
+			6, 5, 4,
+			7, 5, 6
         };
 
         VertexArray va;
         VertexBuffer vb(positions, 8 * 5 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
-        layout.Push<float>(3); // Layout has 3 floats (in this case the x,y, z coordinates); Call Push again to tell layout that there are more information per vertex
+        layout.Push<float>(3); // Layout has 3 floats (in this case the x,y,z coordinates); Call Push again to tell layout that there are more information per vertex
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
@@ -95,7 +95,7 @@ int main(void)
 
 		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 0.1f, 1000.0f);
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(-500.0f, 0.0f, -100.0f));
+		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));
 
 
         Shader shader("res/shaders/Basic.shader");
