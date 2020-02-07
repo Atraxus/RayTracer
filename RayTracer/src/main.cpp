@@ -22,6 +22,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -60,14 +61,14 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-           -800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-            800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-		   -800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
-		    800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
-		   -800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
-		    800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
-		   -800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
-		    800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
+           -80.0f, -50.0f, -200.0f, 0.0f, 0.0f,
+            80.0f, -50.0f, -200.0f, 0.0f, 0.0f,
+		   -80.0f, -10.0f, -200.0f, 0.0f, 0.0f,
+		    80.0f, -10.0f, -200.0f, 0.0f, 0.0f,
+		   -80.0f, -50.0f, -250.0f, 0.0f, 0.0f,
+		    80.0f, -50.0f, -250.0f, 0.0f, 0.0f,
+		   -80.0f, -10.0f, -250.0f, 0.0f, 0.0f,
+		    80.0f, -10.0f, -250.0f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -101,7 +102,9 @@ int main(void)
 
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
-		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 0.1f, 1000.0f);
+
+		Camera camera;
+		glm::mat4 proj = glm::perspective(glm::radians(45.0f),(1920.0f/1080.0f), 100.0f, 1000.0f);
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));
 
