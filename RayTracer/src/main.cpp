@@ -52,35 +52,57 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-            -0.5f, -0.5f, 0.0f, 0.0f,
-             500.5f, -0.5f, 1.0f, 0.0f,
-             500.5f,  500.5f, 1.0f, 1.0f,
-            -0.5f,  500.5f, 0.0f, 1.0f
+            800.0f, 200.0f, -50.0f, 0.0f, 0.0f,
+           1600.0f, 200.0f, -50.0f, 0.0f, 0.0f,
+		    800.0f, 500.0f, -50.0f, 0.0f, 0.0f,
+		   1600.0f, 500.0f, -50.0f, 0.0f, 0.0f,
+		    800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
+		   1600.0f, 200.0f, -100.0f, 0.0f, 0.0f,
+			800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
+		   1600.0f, 500.0f, -100.0f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
+			//vorne
             0, 1, 2,
-            2, 3, 0
+            1, 3, 2,
+			//unten
+			5, 1, 0,
+			1, 6, 5,
+			//links
+			0, 2, 5,
+			2, 5, 7,
+			//rechts
+			1, 6, 3,
+			3, 6, 8,
+			//oben
+			2, 3, 7,
+			3, 8, 7,
+			//hinten
+			5, 6, 7,
+			6, 7, 8
         };
 
         VertexArray va;
-        VertexBuffer vb(positions, 4 * 4 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
+        VertexBuffer vb(positions, 8 * 5 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
-        layout.Push<float>(2); // Layout has 2 floats (in this case the x,y coordinates); Call Push again to tell layout that there are more information per vertex
+        layout.Push<float>(3); // Layout has 3 floats (in this case the x,y, z coordinates); Call Push again to tell layout that there are more information per vertex
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
-        IndexBuffer ib(indices, 6); // create an index buffer with given indices and the number of indices
+        IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
-		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 1.0f, 150.0f);
-		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
+		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 0.1f, 1000.0f);
+		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(-500.0f, 0.0f, -100.0f));
 
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniform4Matf("u_MVP", oProj);
+		shader.SetUniform4Matf("u_MVP", proj);
+		shader.SetUniform4Matf("u_view", view);
 
         // stuff for testing texture
         Texture texture("res/textures/feelsgoodman.jpg");
