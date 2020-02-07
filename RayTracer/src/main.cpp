@@ -112,7 +112,7 @@ int main(void)
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniform4Matf("u_MVP", proj);
+		shader.SetUniform4Matf("u_MVP", proj*camera.worldToView());
 		shader.SetUniform4Matf("u_view", view);
 
         // stuff for testing texture
