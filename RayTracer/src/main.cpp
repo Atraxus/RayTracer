@@ -24,7 +24,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "RayTracer", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -36,11 +36,13 @@ int main(void)
 
     glfwSwapInterval(1);
 
+    // initialize OpenGL
     if (glewInit() != GLEW_OK) {
         std::cout << "ERROR: GLEW init failed!" << std::endl;
         return -1;
     }
 
+    // print version to console
     std::cout << glGetString(GL_VERSION) << std::endl;
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
