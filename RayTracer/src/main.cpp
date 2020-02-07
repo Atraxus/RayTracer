@@ -60,14 +60,14 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-           -800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-            800.0f, 200.0f, -100.0f, 0.0f, 0.0f,
-		   -800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
-		    800.0f, 500.0f, -100.0f, 0.0f, 0.0f,
-		   -800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
-		    800.0f, 200.0f, -200.0f, 0.0f, 0.0f,
-		   -800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
-		    800.0f, 500.0f, -200.0f, 0.0f, 0.0f,
+           -500.0f, -500.0f, -100.0f, 0.0f, 0.0f,
+            500.0f, -500.0f, -100.0f, 0.0f, 1.0f,
+		   -500.0f,  500.0f, -100.0f, 1.0f, 0.0f,
+		    500.0f,  500.0f, -100.0f, 1.0f, 1.0f,
+		   -500.0f, -500.0f, -500.0f, 0.0f, 0.0f,
+		    500.0f, -500.0f, -500.0f, 0.0f, 0.0f,
+		   -500.0f,  500.0f, -500.0f, 0.0f, 0.0f,
+		    500.0f,  500.0f, -500.0f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -102,15 +102,14 @@ int main(void)
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
 		glm::mat4 proj = glm::perspective(60.0f,(1920.0f/1080.0f), 0.1f, 1000.0f);
-		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
+		//glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));
 
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
-        shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniform4Matf("u_MVP", proj);
-		shader.SetUniform4Matf("u_view", view);
+		//shader.SetUniform4Matf("u_MVP", mvp);
+		//shader.SetUniform4Matf("u_View", view);
 
         // stuff for testing texture
         Texture texture("res/textures/feelsgoodman.jpg");
@@ -135,6 +134,9 @@ int main(void)
         // ---
 
 
+        glm::vec3 translation(200, 200, 0);
+        float rotation = 0.0f;
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
@@ -147,12 +149,19 @@ int main(void)
             ImGui::NewFrame();
             // ---
 
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+            model = glm::rotate(model, rotation, glm::vec3(0, 1, 0));
+            glm::mat4 mvp = proj * view * model;
+
             shader.Bind();
+            shader.SetUniform4Matf("u_MVP", mvp);
             renderer.Draw(va, ib, shader);
             
             // --- ImGui stuff
-            float f = 0.0f;
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+            ImGui::SliderFloat("Rotation", &rotation, -1.0f, 1.0f);
+            ImGui::SliderFloat("X", &translation.x, -500.0f, 500.0f);
+            ImGui::SliderFloat("Y", &translation.y, -500.0f, 500.0f);
+            ImGui::SliderFloat("Z", &translation.z, -500.0f, 500.0f);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
