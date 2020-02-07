@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 
 struct ShaderProgramSource
@@ -20,6 +22,7 @@ public:
 
 	// Set uniforms
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+	void SetUniform4Matf(const std::string& name, glm::mat4 proj);
 
 private:
 	std::string m_FilePath;

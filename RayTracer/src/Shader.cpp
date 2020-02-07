@@ -1,4 +1,7 @@
 #include "Shader.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -33,6 +36,10 @@ void Shader::Unbind() const
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
     GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+}
+void Shader::SetUniform4Matf(const std::string& name, glm::mat4 proj)
+{
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE,  glm::value_ptr(proj)));
 }
 
 unsigned int Shader::GetUniformLocation(const std::string& name)
