@@ -1,12 +1,20 @@
+// opengl and glfw3 include
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+// math library include
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "glm/glm.hpp"
+// includes for imgui (not relevant for project at the end)
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
+// c++ std includes
 #include <iostream>
 
+// project file includes
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
@@ -119,28 +127,36 @@ int main(void)
         // create renderer
         Renderer renderer;
 
-        // variables for color animation
-        float r = 0.0f;
-        float increment = 0.05f;
+        // --- ImGui stuff
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 130");
+        ImGui::StyleColorsDark();
+        // ---
+
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
             renderer.Clear();
 
-            // bind shader and define color
-            // at some point this should be changed to a material so it can be moved to the renderer
+            // --- ImGui stuff
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            // ---
+
             shader.Bind();
-            shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-
             renderer.Draw(va, ib, shader);
-
-            if (r > 1.0f)
-                increment = -0.05f;
-            else if (r < 0.0f)
-                increment = 0.05f;
-
-            r += increment;
+            
+            // --- ImGui stuff
+            float f = 0.0f;
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            // ---
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
@@ -150,6 +166,9 @@ int main(void)
         }
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
