@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 
 // math library include
-#include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 // includes for imgui (not relevant for project at the end)
@@ -61,14 +60,14 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-           -80.0f, -50.0f, -200.0f, 0.0f, 0.0f,
-            80.0f, -50.0f, -200.0f, 0.0f, 0.0f,
-		   -80.0f, -10.0f, -200.0f, 0.0f, 0.0f,
-		    80.0f, -10.0f, -200.0f, 0.0f, 0.0f,
-		   -80.0f, -50.0f, -250.0f, 0.0f, 0.0f,
-		    80.0f, -50.0f, -250.0f, 0.0f, 0.0f,
-		   -80.0f, -10.0f, -250.0f, 0.0f, 0.0f,
-		    80.0f, -10.0f, -250.0f, 0.0f, 0.0f,
+           -5.0f, -5.0f, -20.0f, 0.0f, 0.0f,
+            5.0f, -5.0f, -20.0f, 0.0f, 0.0f,
+		   -5.0f,  5.0f, -20.0f, 0.0f, 0.0f,
+		    5.0f,  5.0f, -20.0f, 0.0f, 0.0f,
+		   -5.0f, -5.0f, -30.0f, 0.0f, 0.0f,
+		    5.0f, -5.0f, -30.0f, 0.0f, 0.0f,
+		   -5.0f,  5.0f, -30.0f, 0.0f, 0.0f,
+		    5.0f,  5.0f, -30.0f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -103,10 +102,16 @@ int main(void)
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
 
-		Camera camera;
+		/*Camera camera;
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f),(1920.0f/1080.0f), 100.0f, 1000.0f);
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));*/
+
+        glm::mat4 Proj = glm::perspective(glm::radians(45.f), 1.33f, 0.1f, 100.f);
+        glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.f), glm::vec3(1));
+        glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, 0.0f, glm::vec3(1, 0, 0));
+        glm::mat4 View = glm::rotate(ViewRotateX, 0.0f, glm::vec3(0, 1, 0));
+        glm::mat4 Model = glm::mat4(1.0f);
 
 
         Shader shader("res/shaders/Basic.shader");
@@ -138,7 +143,8 @@ int main(void)
 
 
         glm::vec3 translation(0, 0, 0);
-        float rotation = 0.0f;
+        float rotationX = 0.0f;
+        float rotationY = 0.0f;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -152,19 +158,34 @@ int main(void)
             ImGui::NewFrame();
             // ---
 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-            model = glm::rotate(model, rotation, glm::vec3(0, 1, 0));
-            glm::mat4 mvp = model* proj * view;
+            //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+
+            ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
+            ViewRotateX = glm::rotate(ViewTranslate, rotationX, glm::vec3(1, 0, 0));
+            View = glm::rotate(ViewRotateX, rotationY, glm::vec3(0, 1, 0));
+            Model = glm::mat4(1.0f);
+            glm::mat4 mvp = Proj * View * Model;
 
             shader.Bind();
             shader.SetUniform4Matf("u_MVP", mvp);
             renderer.Draw(va, ib, shader);
             
             // --- ImGui stuff
-            ImGui::SliderFloat("Rotation", &rotation, -1.0f, 1.0f);
-            ImGui::SliderFloat("X", &translation.x, -5.0f, 5.0f);
-            ImGui::SliderFloat("Y", &translation.y, -5.0f, 5.0f);
-            ImGui::SliderFloat("Z", &translation.z, -5.0f, 5.0f);
+            ImGui::SliderFloat("RotationX", &rotationX, -5.0f, 5.0f);
+            if (ImGui::Button("RotationX = 0")) rotationX = 0.0f;
+
+            ImGui::SliderFloat("RotationY", &rotationY, -5.0f, 5.0f);
+            if (ImGui::Button("RotationY = 0")) rotationY = 0.0f;
+
+            ImGui::SliderFloat("X", &translation.x, -50.0f, 50.0f);
+            if (ImGui::Button("X = 0")) translation.x = 0.0f;
+
+            ImGui::SliderFloat("Y", &translation.y, -50.0f, 50.0f);
+            if (ImGui::Button("Y = 0")) translation.y = 0.0f;
+
+            ImGui::SliderFloat("Z", &translation.z, -50.0f, 50.0f);
+            if (ImGui::Button("Z = 0")) translation.z = 0.0f;
+
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
