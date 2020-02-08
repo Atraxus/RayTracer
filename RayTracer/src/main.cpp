@@ -15,15 +15,15 @@
 #include <iostream>
 
 // project file includes
-#include "Renderer.h"
-#include "VertexBuffer.h"
-#include "ColorBuffer.h"
-#include "VertexBufferLayout.h"
-#include "IndexBuffer.h"
+#include "Renderer/Renderer.h"
+#include "Buffer/VertexBuffer.h"
+#include "Buffer/ColorBuffer.h"
+#include "Buffer/VertexBufferLayout.h"
+#include "Buffer/IndexBuffer.h"
 #include "VertexArray.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Camera.h"
+#include "Shader/Shader.h"
+#include "Texture/Texture.h"
+#include "Camera/Camera.h"
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -105,7 +105,7 @@ int main(void)
 
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
-		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, -1.0f));
+		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, 0.0f));
 		/*
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f),(1920.0f/1080.0f), 100.0f, 1000.0f);
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);

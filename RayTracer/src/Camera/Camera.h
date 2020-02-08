@@ -12,7 +12,7 @@ public:
 	void setFov(float inputFov);
 	void setPosition(glm::vec3 inputPosition);
 private:
-	glm::vec3 position;
-	glm::vec3 viewDirection;
-	float fov;
+	glm::vec3 m_Position;
+	glm::vec3 m_ViewDirection;
+	float m_Fov;
 };

@@ -2,9 +2,9 @@
 
 #include <GL/glew.h>
 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
+#include "../VertexArray.h"
+#include "../Buffer/IndexBuffer.h"
+#include "../Shader/Shader.h"
 
 // TODO: the error stuff should really get its own class
 

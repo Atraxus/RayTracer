@@ -8,7 +8,7 @@
 #include <string>
 #include <sstream>
 
-#include "Renderer.h"
+#include "../Renderer/Renderer.h"
 
 
 Shader::Shader(const std::string& filepath)

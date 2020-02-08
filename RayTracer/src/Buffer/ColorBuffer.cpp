@@ -1,5 +1,5 @@
 #include "ColorBuffer.h"
-#include "Renderer.h"
+#include "../Renderer/Renderer.h"
 
 ColorBuffer::ColorBuffer(const void* data, unsigned int size)
     : m_Size(size)
