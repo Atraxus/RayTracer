@@ -4,6 +4,7 @@
 
 // math library include
 #include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtx/transform.hpp>
 
 // includes for imgui (not relevant for project at the end)
 #include "imgui/imgui.h"
@@ -60,14 +61,14 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-           -5.0f, -5.0f, -20.0f, 0.0f, 0.0f,
-            5.0f, -5.0f, -20.0f, 0.0f, 0.0f,
-		   -5.0f,  5.0f, -20.0f, 0.0f, 0.0f,
-		    5.0f,  5.0f, -20.0f, 0.0f, 0.0f,
-		   -5.0f, -5.0f, -30.0f, 0.0f, 0.0f,
-		    5.0f, -5.0f, -30.0f, 0.0f, 0.0f,
-		   -5.0f,  5.0f, -30.0f, 0.0f, 0.0f,
-		    5.0f,  5.0f, -30.0f, 0.0f, 0.0f,
+           -2.5f, -2.5f,  2.5f, 0.0f, 0.0f,
+            2.5f, -2.5f,  2.5f, 0.0f, 0.0f,
+		   -2.5f,  2.5f,  2.5f, 0.0f, 0.0f,
+		    2.5f,  2.5f,  2.5f, 0.0f, 0.0f,
+		   -2.5f, -2.5f, -2.5f, 0.0f, 0.0f,
+		    2.5f, -2.5f, -2.5f, 0.0f, 0.0f,
+		   -2.5f,  2.5f, -2.5f, 0.0f, 0.0f,
+		    2.5f,  2.5f, -2.5f, 0.0f, 0.0f,
         };
         unsigned int indices[] = // has to be unsigned
         {
@@ -107,10 +108,10 @@ int main(void)
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));*/
 
-        glm::mat4 Proj = glm::perspective(glm::radians(45.f), 1.33f, 0.1f, 100.f);
-        glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.f), glm::vec3(1));
+        glm::mat4 Proj = glm::perspective(glm::radians(45.0f), 1.33f, 0.1f, 100.f);
+        /*glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.f), glm::vec3(1));
         glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, 0.0f, glm::vec3(1, 0, 0));
-        glm::mat4 View = glm::rotate(ViewRotateX, 0.0f, glm::vec3(0, 1, 0));
+        glm::mat4 View = glm::rotate(ViewRotateX, 0.0f, glm::vec3(0, 1, 0));*/
         glm::mat4 Model = glm::mat4(1.0f);
 
 
@@ -142,15 +143,25 @@ int main(void)
         // ---
 
 
-        glm::vec3 translation(0, 0, 0);
-        float rotationX = 0.0f;
-        float rotationY = 0.0f;
+        glm::vec3 translationA(0, 0, 0);
+        glm::vec3 translationB(0, 0, 0);
+        float rotationXA = 0.0f;
+        float rotationYA = 0.0f;
+        float rotationZA = 0.0f;
+        float rotationXB = 0.0f;
+        float rotationYB = 0.0f;
+        float rotationZB = 0.0f;
+        float cameraX = 0.0f;
+        float cameraY = 10.0f;
+        float cameraZ = 10.0f;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            renderer.Clear();
+            //renderer.Clear();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
             // --- ImGui stuff
             ImGui_ImplOpenGL3_NewFrame();
@@ -159,32 +170,94 @@ int main(void)
             // ---
 
             //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+            // View
+            glm::mat4 View = glm::lookAt(
+                glm::vec3(cameraX, cameraY, cameraZ), // Camera is at (4,3,3), in World Space
+                glm::vec3(0, 0, 0), // and looks at the origin
+                glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+            );
 
-            ViewTranslate = glm::translate(glm::mat4(1.0f), translation);
-            ViewRotateX = glm::rotate(ViewTranslate, rotationX, glm::vec3(1, 0, 0));
-            View = glm::rotate(ViewRotateX, rotationY, glm::vec3(0, 1, 0));
-            Model = glm::mat4(1.0f);
-            glm::mat4 mvp = Proj * View * Model;
+            // Cube A
+            {
+                // Model
+                glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
+                glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXA), glm::vec3(1, 0, 0));
+                glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYA), glm::vec3(0, 1, 0));
+                glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZA), glm::vec3(0, 0, 1));
+                glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationA);
+                Model = modelTranslateMat * modelRotateMat * modelScaleMat;
 
-            shader.Bind();
-            shader.SetUniform4Matf("u_MVP", mvp);
-            renderer.Draw(va, ib, shader);
-            
+                glm::mat4 mvp = Proj * View * Model; // inverted 
+
+                shader.Bind();
+                shader.SetUniform4Matf("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            // Cube B
+            {
+                // Model
+                glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
+                glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXB), glm::vec3(1, 0, 0));
+                glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYB), glm::vec3(0, 1, 0));
+                glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZB), glm::vec3(0, 0, 1));
+                glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationB);
+                Model = modelTranslateMat * modelRotateMat * modelScaleMat;
+
+
+                glm::mat4 mvp = Proj * View * Model; // inverted 
+
+                shader.Bind();
+                shader.SetUniform4Matf("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+
+
             // --- ImGui stuff
-            ImGui::SliderFloat("RotationX", &rotationX, -5.0f, 5.0f);
-            if (ImGui::Button("RotationX = 0")) rotationX = 0.0f;
+            ImGui::SliderFloat("cameraX", &cameraX, -50.0f, 50.0f);
+            if (ImGui::Button("cameraX = 0")) cameraX = 0.0f;
+            ImGui::SliderFloat("cameraY", &cameraY, -50.0f, 50.0f);
+            if (ImGui::Button("cameraY = 0")) cameraY = 0.0f;
+            ImGui::SliderFloat("cameraZ", &cameraZ, -50.0f, 50.0f);
+            if (ImGui::Button("cameraZ = 0")) cameraZ = 0.0f;
+            // Cube A
+            ImGui::SliderFloat("rotationXA", &rotationXA, -50.0f, 50.0f);
+            if (ImGui::Button("rotationXA = 0")) rotationXA = 0.0f;
 
-            ImGui::SliderFloat("RotationY", &rotationY, -5.0f, 5.0f);
-            if (ImGui::Button("RotationY = 0")) rotationY = 0.0f;
+            ImGui::SliderFloat("RotationYA", &rotationYA, -50.0f, 50.0f);
+            if (ImGui::Button("RotationYA = 0")) rotationYA = 0.0f;
 
-            ImGui::SliderFloat("X", &translation.x, -50.0f, 50.0f);
-            if (ImGui::Button("X = 0")) translation.x = 0.0f;
+            ImGui::SliderFloat("RotationZA", &rotationZA, -50.0f, 50.0f);
+            if (ImGui::Button("RotationZA = 0")) rotationZA = 0.0f;
 
-            ImGui::SliderFloat("Y", &translation.y, -50.0f, 50.0f);
-            if (ImGui::Button("Y = 0")) translation.y = 0.0f;
+            ImGui::SliderFloat("AX", &translationA.x, -50.0f, 50.0f);
+            if (ImGui::Button("AX = 0")) translationA.x = 0.0f;
 
-            ImGui::SliderFloat("Z", &translation.z, -50.0f, 50.0f);
-            if (ImGui::Button("Z = 0")) translation.z = 0.0f;
+            ImGui::SliderFloat("AY", &translationA.y, -50.0f, 50.0f);
+            if (ImGui::Button("AY = 0")) translationA.y = 0.0f;
+
+            ImGui::SliderFloat("AZ", &translationA.z, -50.0f, 50.0f);
+            if (ImGui::Button("AZ = 0")) translationA.z = 0.0f;
+
+            // Cube B
+            ImGui::SliderFloat("rotationXB", &rotationXB, -50.0f, 50.0f);
+            if (ImGui::Button("rotationXB = 0")) rotationXB = 0.0f;
+
+            ImGui::SliderFloat("RotationYB", &rotationYB, -50.0f, 50.0f);
+            if (ImGui::Button("RotationYB = 0")) rotationYB = 0.0f;
+
+            ImGui::SliderFloat("RotationZB", &rotationZB, -50.0f, 50.0f);
+            if (ImGui::Button("RotationZB = 0")) rotationZB = 0.0f;
+
+            ImGui::SliderFloat("BX", &translationB.x, -50.0f, 50.0f);
+            if (ImGui::Button("BX = 0")) translationB.x = 0.0f;
+
+            ImGui::SliderFloat("BY", &translationB.y, -50.0f, 50.0f);
+            if (ImGui::Button("BY = 0")) translationB.y = 0.0f;
+
+            ImGui::SliderFloat("BZ", &translationB.z, -50.0f, 50.0f);
+            if (ImGui::Button("BZ = 0")) translationB.z = 0.0f;
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
