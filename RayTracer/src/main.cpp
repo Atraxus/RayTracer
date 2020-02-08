@@ -17,6 +17,7 @@
 // project file includes
 #include "Renderer.h"
 #include "VertexBuffer.h"
+#include "ColorBuffer.h"
 #include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
@@ -61,15 +62,16 @@ int main(void)
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
         float positions[] =
         {
-           -2.5f, -2.5f,  2.5f, 0.0f, 0.0f,
-            2.5f, -2.5f,  2.5f, 0.0f, 0.0f,
-		   -2.5f,  2.5f,  2.5f, 0.0f, 0.0f,
-		    2.5f,  2.5f,  2.5f, 0.0f, 0.0f,
-		   -2.5f, -2.5f, -2.5f, 0.0f, 0.0f,
-		    2.5f, -2.5f, -2.5f, 0.0f, 0.0f,
-		   -2.5f,  2.5f, -2.5f, 0.0f, 0.0f,
-		    2.5f,  2.5f, -2.5f, 0.0f, 0.0f,
+           -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.583f,  0.771f,  0.014f, 1.0f,
+            2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.327f,  0.483f,  0.844f, 1.0f,
+           -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.327f,  0.0f,    0.844f, 1.0f,
+            2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.822f,  0.569f,  0.201f, 1.0f,
+           -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.0f,    0.602f,  0.223f, 1.0f,
+            2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.310f,  0.747f,  0.0f,   1.0f,
+           -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.0,     0.616f,  0.489f, 1.0f,
+            2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.559f,  0.436f,  0.730f, 1.0f
         };
+
         unsigned int indices[] = // has to be unsigned
         {
 			//vorne
@@ -93,11 +95,12 @@ int main(void)
         };
 
         VertexArray va;
-        VertexBuffer vb(positions, 8 * 5 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
+        VertexBuffer vb(positions, 8 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
         layout.Push<float>(3); // Layout has 3 floats (in this case the x,y,z coordinates); Call Push again to tell layout that there are more information per vertex
         layout.Push<float>(2);
+        layout.Push<float>(4);
         va.AddBuffer(vb, layout);
 
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
@@ -134,6 +137,10 @@ int main(void)
 
         // create renderer
         Renderer renderer;
+        // Enable depth test
+        glEnable(GL_DEPTH_TEST);
+        // Accept fragment if it closer to the camera than the former one
+        glDepthFunc(GL_LESS);
 
         // --- ImGui stuff
         ImGui::CreateContext();
@@ -161,7 +168,7 @@ int main(void)
             /* Render here */
             //renderer.Clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+            glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 
             // --- ImGui stuff
             ImGui_ImplOpenGL3_NewFrame();
@@ -207,7 +214,6 @@ int main(void)
 
                 glm::mat4 mvp = Proj * View * Model; // inverted 
 
-                shader.Bind();
                 shader.SetUniform4Matf("u_MVP", mvp);
                 renderer.Draw(va, ib, shader);
             }
