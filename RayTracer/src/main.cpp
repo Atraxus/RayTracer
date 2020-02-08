@@ -105,13 +105,12 @@ int main(void)
 
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
-
-		/*Camera camera;
+		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, -1.0f));
+		/*
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f),(1920.0f/1080.0f), 100.0f, 1000.0f);
 		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));*/
 
-        glm::mat4 Proj = glm::perspective(glm::radians(45.0f), 1.33f, 0.1f, 100.f);
         /*glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.f), glm::vec3(1));
         glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, 0.0f, glm::vec3(1, 0, 0));
         glm::mat4 View = glm::rotate(ViewRotateX, 0.0f, glm::vec3(0, 1, 0));*/
@@ -161,6 +160,7 @@ int main(void)
         float cameraX = 0.0f;
         float cameraY = 10.0f;
         float cameraZ = 10.0f;
+		float fov = 45.0f;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -178,11 +178,10 @@ int main(void)
 
             //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
             // View
-            glm::mat4 View = glm::lookAt(
-                glm::vec3(cameraX, cameraY, cameraZ), // Camera is at (4,3,3), in World Space
-                glm::vec3(0, 0, 0), // and looks at the origin
-                glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-            );
+			camera.setPosition(glm::vec3(cameraX, cameraY, cameraZ));
+			camera.setFov(fov);
+			glm::mat4 View = camera.getView();
+			glm::mat4 Proj = camera.getProj();
 
             // Cube A
             {
@@ -264,6 +263,9 @@ int main(void)
 
             ImGui::SliderFloat("BZ", &translationB.z, -50.0f, 50.0f);
             if (ImGui::Button("BZ = 0")) translationB.z = 0.0f;
+
+			ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
+			if (ImGui::Button("FOV = 45")) fov = 45.0f;
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
