@@ -95,7 +95,7 @@ int main(void)
 			7, 5, 6
         };
 
-		light light(glm::vec3(-2.5f, -2.5f, 2.5f), 8.0f);
+		light light(glm::vec3(0.0f, 0.0f, 2.5f), 5.0f);
 		for (int i = 0; i < 8; i++) {
 			for (int j = 5; j < 8; j++) {
 				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
