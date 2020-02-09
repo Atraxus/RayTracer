@@ -27,3 +27,23 @@ float light::getBrightness(glm::vec3 inputLocation,float inputColor)
 		color = 0.0f;
 	return color;
 }
+
+float light::getX()
+{
+	return position.x;
+}
+
+float light::getY()
+{
+	return position.y;
+}
+
+float light::getZ()
+{
+	return position.z;
+}
+
+glm::vec3 light::getPos()
+{
+	return position;
+}
