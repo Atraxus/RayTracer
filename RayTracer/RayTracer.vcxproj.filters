@@ -483,6 +483,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Compute.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\VertexArray.h">
