@@ -60,7 +60,7 @@ int main(void)
     // print version to console
     std::cout << glGetString(GL_VERSION) << std::endl;
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
-        float positions[] =
+        /*float positions[] =
         {
            -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.583f,  0.771f,  0.014f, 1.0f,
             2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.327f,  0.483f,  0.844f, 1.0f,
@@ -70,32 +70,67 @@ int main(void)
             2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.310f,  0.747f,  0.0f,   1.0f,
            -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.0,     0.616f,  0.489f, 1.0f,
             2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.559f,  0.436f,  0.730f, 1.0f
+        };*/
+
+        float positions[] =
+        {
+            // Cube A
+                //front
+                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                //bottom
+                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                //left
+                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                //right
+                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                //top
+                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                //back
+                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f
         };
 
         unsigned int indices[] = // has to be unsigned
         {
-			//vorne
+			//front
             0, 1, 2,
             1, 3, 2,
-			//unten
-			4, 1, 0,
-			5, 4, 1,
-			//links
-			4, 0, 2,
-			4, 2, 6,
-			//rechts
-			1, 5, 3,
-			3, 5, 7,
-			//oben
-			2, 3, 6,
-			3, 7, 6,
-			//hinten
-			6, 5, 4,
-			7, 5, 6
+			//bottom
+			4, 5, 6,
+			5, 6, 7,
+			//left
+			8, 9, 10,
+			9, 10, 11,
+			//right
+			12, 13, 14,
+			13, 14, 15,
+			//top
+			16, 17, 18,
+			17, 18, 19,
+			//back
+			20, 21, 22,
+			21, 22, 23
         };
 
         VertexArray va;
-        VertexBuffer vb(positions, 8 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
+        VertexBuffer vb(positions, 24 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
         layout.Push<float>(3); // Layout has 3 floats (in this case the x,y,z coordinates); Call Push again to tell layout that there are more information per vertex
@@ -150,15 +185,15 @@ int main(void)
 
 
         glm::vec3 translationA(0, 0, 0);
-        glm::vec3 translationB(0, 0, 0);
+        /*glm::vec3 translationB(0, 0, 0);*/
         float rotationXA = 0.0f;
         float rotationYA = 0.0f;
         float rotationZA = 0.0f;
-        float rotationXB = 0.0f;
-        float rotationYB = 0.0f;
-        float rotationZB = 0.0f;
+        //float rotationXB = 0.0f;
+        //float rotationYB = 0.0f;
+        //float rotationZB = 0.0f;
         float cameraX = 0.0f;
-        float cameraY = 10.0f;
+        float cameraY = 1.0f;
         float cameraZ = 10.0f;
 		float fov = 45.0f;
 
@@ -200,22 +235,22 @@ int main(void)
                 renderer.Draw(va, ib, shader);
             }
 
-            // Cube B
-            {
-                // Model
-                glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
-                glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXB), glm::vec3(1, 0, 0));
-                glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYB), glm::vec3(0, 1, 0));
-                glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZB), glm::vec3(0, 0, 1));
-                glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationB);
-                Model = modelTranslateMat * modelRotateMat * modelScaleMat;
+            //// Cube B
+            //{
+            //    // Model
+            //    glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
+            //    glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXB), glm::vec3(1, 0, 0));
+            //    glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYB), glm::vec3(0, 1, 0));
+            //    glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZB), glm::vec3(0, 0, 1));
+            //    glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationB);
+            //    Model = modelTranslateMat * modelRotateMat * modelScaleMat;
 
 
-                glm::mat4 mvp = Proj * View * Model; // inverted 
+            //    glm::mat4 mvp = Proj * View * Model; // inverted 
 
-                shader.SetUniform4Matf("u_MVP", mvp);
-                renderer.Draw(va, ib, shader);
-            }
+            //    shader.SetUniform4Matf("u_MVP", mvp);
+            //    renderer.Draw(va, ib, shader);
+            //}
 
 
 
@@ -227,13 +262,13 @@ int main(void)
             ImGui::SliderFloat("cameraZ", &cameraZ, -50.0f, 50.0f);
             if (ImGui::Button("cameraZ = 0")) cameraZ = 0.0f;
             // Cube A
-            ImGui::SliderFloat("rotationXA", &rotationXA, -50.0f, 50.0f);
+            ImGui::SliderFloat("rotationXA", &rotationXA, -100.0f, 100.0f);
             if (ImGui::Button("rotationXA = 0")) rotationXA = 0.0f;
 
-            ImGui::SliderFloat("RotationYA", &rotationYA, -50.0f, 50.0f);
+            ImGui::SliderFloat("RotationYA", &rotationYA, -100.0f, 100.0f);
             if (ImGui::Button("RotationYA = 0")) rotationYA = 0.0f;
 
-            ImGui::SliderFloat("RotationZA", &rotationZA, -50.0f, 50.0f);
+            ImGui::SliderFloat("RotationZA", &rotationZA, -100.0f, 100.0f);
             if (ImGui::Button("RotationZA = 0")) rotationZA = 0.0f;
 
             ImGui::SliderFloat("AX", &translationA.x, -50.0f, 50.0f);
@@ -245,28 +280,28 @@ int main(void)
             ImGui::SliderFloat("AZ", &translationA.z, -50.0f, 50.0f);
             if (ImGui::Button("AZ = 0")) translationA.z = 0.0f;
 
-            // Cube B
-            ImGui::SliderFloat("rotationXB", &rotationXB, -50.0f, 50.0f);
-            if (ImGui::Button("rotationXB = 0")) rotationXB = 0.0f;
+            //// Cube B
+            //ImGui::SliderFloat("rotationXB", &rotationXB, -50.0f, 50.0f);
+            //if (ImGui::Button("rotationXB = 0")) rotationXB = 0.0f;
 
-            ImGui::SliderFloat("RotationYB", &rotationYB, -50.0f, 50.0f);
-            if (ImGui::Button("RotationYB = 0")) rotationYB = 0.0f;
+            //ImGui::SliderFloat("RotationYB", &rotationYB, -50.0f, 50.0f);
+            //if (ImGui::Button("RotationYB = 0")) rotationYB = 0.0f;
 
-            ImGui::SliderFloat("RotationZB", &rotationZB, -50.0f, 50.0f);
-            if (ImGui::Button("RotationZB = 0")) rotationZB = 0.0f;
+            //ImGui::SliderFloat("RotationZB", &rotationZB, -50.0f, 50.0f);
+            //if (ImGui::Button("RotationZB = 0")) rotationZB = 0.0f;
 
-            ImGui::SliderFloat("BX", &translationB.x, -50.0f, 50.0f);
-            if (ImGui::Button("BX = 0")) translationB.x = 0.0f;
+            //ImGui::SliderFloat("BX", &translationB.x, -50.0f, 50.0f);
+            //if (ImGui::Button("BX = 0")) translationB.x = 0.0f;
 
-            ImGui::SliderFloat("BY", &translationB.y, -50.0f, 50.0f);
-            if (ImGui::Button("BY = 0")) translationB.y = 0.0f;
+            //ImGui::SliderFloat("BY", &translationB.y, -50.0f, 50.0f);
+            //if (ImGui::Button("BY = 0")) translationB.y = 0.0f;
 
-            ImGui::SliderFloat("BZ", &translationB.z, -50.0f, 50.0f);
-            if (ImGui::Button("BZ = 0")) translationB.z = 0.0f;
+            //ImGui::SliderFloat("BZ", &translationB.z, -50.0f, 50.0f);
+            //if (ImGui::Button("BZ = 0")) translationB.z = 0.0f;
 
-			ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
+			
+            ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
 			if (ImGui::Button("FOV = 45")) fov = 45.0f;
-
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

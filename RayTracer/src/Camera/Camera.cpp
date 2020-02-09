@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera():
-	m_ViewDirection(0.0f, 0.0f, -1.0f),
+	m_ViewDirection(0.0f, 0.0f, 0.0f),
 	m_Position(0.0f, 0.0f, 0.0f)
 {
 	m_Fov = glm::radians(45.0f);
