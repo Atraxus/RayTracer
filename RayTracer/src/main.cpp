@@ -24,6 +24,7 @@
 #include "Shader/Shader.h"
 #include "Texture/Texture.h"
 #include "Camera/Camera.h"
+#include "Light/light.h"
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -129,6 +130,15 @@ int main(void)
 			21, 22, 23
         };
 
+		light light(glm::vec3(-2.5f, -2.5f, 2.5f), 8.0f);
+		for (int i = 0; i < 8; i++) {
+			for (int j = 5; j < 8; j++) {
+				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
+			}
+		}
+
+		//float newColor = light.getBrightness(glm::vec3(-2.5f, -2.5f, 2.5f), 0.583);
+
         VertexArray va;
         VertexBuffer vb(positions, 24 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
@@ -141,21 +151,11 @@ int main(void)
         IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
 
 		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, 0.0f));
-		/*
-		glm::mat4 proj = glm::perspective(glm::radians(45.0f),(1920.0f/1080.0f), 100.0f, 1000.0f);
-		glm::mat4 oProj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -200.0f, 200.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0.0f, 0.0f, 0.0f));*/
-
-        /*glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.f), glm::vec3(1));
-        glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, 0.0f, glm::vec3(1, 0, 0));
-        glm::mat4 View = glm::rotate(ViewRotateX, 0.0f, glm::vec3(0, 1, 0));*/
         glm::mat4 Model = glm::mat4(1.0f);
 
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
-		//shader.SetUniform4Matf("u_MVP", mvp);
-		//shader.SetUniform4Matf("u_View", view);
 
         // stuff for testing texture
         Texture texture("res/textures/feelsgoodman.jpg");

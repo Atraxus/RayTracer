@@ -154,6 +154,7 @@
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Buffer\ColorBuffer.cpp" />
     <ClCompile Include="src\Buffer\IndexBuffer.cpp" />
+    <ClCompile Include="src\Light\light.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Buffer\ColorBuffer.h" />
     <ClInclude Include="src\Buffer\IndexBuffer.h" />
+    <ClInclude Include="src\Light\light.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\Texture\Texture.h" />

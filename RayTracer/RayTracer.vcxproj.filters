@@ -69,6 +69,9 @@
     <ClCompile Include="src\Texture\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Light\light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1263,6 +1266,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Buffer\VertexBufferLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light\light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
