@@ -156,8 +156,10 @@
     <ClCompile Include="src\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="src\Light\light.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\RayTracer.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
+    <ClCompile Include="src\Buffer\ShaderStorageBuffer.cpp" />
     <ClCompile Include="src\Texture\Texture.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -312,8 +314,10 @@
     <ClInclude Include="src\Buffer\ColorBuffer.h" />
     <ClInclude Include="src\Buffer\IndexBuffer.h" />
     <ClInclude Include="src\Light\light.h" />
+    <ClInclude Include="src\RayTracer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\Shader.h" />
+    <ClInclude Include="src\Buffer\ShaderStorageBuffer.h" />
     <ClInclude Include="src\Texture\Texture.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />

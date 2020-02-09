@@ -3,13 +3,13 @@
 #include <GLFW/glfw3.h>
 
 // math library include
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
 // includes for imgui (not relevant for project at the end)
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 // c++ std includes
 #include <iostream>
@@ -22,6 +22,7 @@
 #include "Buffer/IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader/Shader.h"
+#include "Buffer/ShaderStorageBuffer.h"
 #include "Texture/Texture.h"
 #include "Camera/Camera.h"
 #include "Light/light.h"
@@ -30,15 +31,13 @@
 int main(void)
 {
     GLFWwindow* window;
-
     /* Initialize the library */
     if (!glfwInit())
         return -1;
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(1920, 1080, "RayTracer", NULL, NULL);
     if (!window)
@@ -46,12 +45,9 @@ int main(void)
         glfwTerminate();
         return -1;
     }
-
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-
     glfwSwapInterval(1);
-
     // initialize OpenGL
     if (glewInit() != GLEW_OK) {
         std::cout << "ERROR: GLEW init failed!" << std::endl;
@@ -105,7 +101,13 @@ int main(void)
                 -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
                  2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
                 -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
-                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f
+                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+
+                 //bottom
+                -100.0f, -3.0f,  100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f,
+                 100.0f, -3.0f,  100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f,
+                -100.0f, -3.0f, -100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f,
+                 100.0f, -3.0f, -100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f
         };
 
         unsigned int indices[] = // has to be unsigned
@@ -127,10 +129,14 @@ int main(void)
 			17, 18, 19,
 			//back
 			20, 21, 22,
-			21, 22, 23
+			21, 22, 23,
+
+            //back
+            24, 25, 26,
+            25, 26, 27
         };
 
-		light light(glm::vec3(0.0f, 0.0f, 2.5f), 5.0f);
+		light light(glm::vec3(-2.5f, -2.5f, 2.5f), 8.0f);
 		for (int i = 0; i < 24; i++) {
 			for (int j = 5; j < 8; j++) {
 				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
@@ -140,7 +146,7 @@ int main(void)
 		//float newColor = light.getBrightness(glm::vec3(-2.5f, -2.5f, 2.5f), 0.583);
 
         VertexArray va;
-        VertexBuffer vb(positions, 24 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
+        VertexBuffer vb(positions, 28 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
         VertexBufferLayout layout;
         layout.Push<float>(3); // Layout has 3 floats (in this case the x,y,z coordinates); Call Push again to tell layout that there are more information per vertex
@@ -148,7 +154,7 @@ int main(void)
         layout.Push<float>(4);
         va.AddBuffer(vb, layout);
 
-        IndexBuffer ib(indices, 36); // create an index buffer with given indices and the number of indices
+        IndexBuffer ib(indices, 42); // create an index buffer with given indices and the number of indices
 
 		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
@@ -184,6 +190,22 @@ int main(void)
         // ---
 
 
+
+
+        
+        
+        // --- Compute shader stuff
+        /*unsigned int raycount = 1920 * 1080;
+
+        glm::vec4 positions[raycount];
+        glm::vec4 directions[raycount];
+        glm::vec4 colors[raycount];
+        
+        ShaderStorageBuffer posSSBO(raycount, positions);*/
+
+        // ---
+
+
         glm::vec3 translationA(0, 0, 0);
         /*glm::vec3 translationB(0, 0, 0);*/
         float rotationXA = 0.0f;
@@ -203,7 +225,7 @@ int main(void)
             /* Render here */
             //renderer.Clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
             // --- ImGui stuff
             ImGui_ImplOpenGL3_NewFrame();
