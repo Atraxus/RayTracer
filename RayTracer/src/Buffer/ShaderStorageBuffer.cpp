@@ -17,12 +17,15 @@ ShaderStorageBuffer::ShaderStorageBuffer(unsigned int const raycount, glm::vec4 
 
 ShaderStorageBuffer::~ShaderStorageBuffer()
 {
+	glDeleteBuffers(1, &m_RendererID);
 }
 
 void ShaderStorageBuffer::Bind() const
 {
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 }
 
 void ShaderStorageBuffer::Unbind() const
 {
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
