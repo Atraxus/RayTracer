@@ -24,6 +24,11 @@ struct Ray{
     vec3 direction;
 };
 
+struct Light {
+	vec3 position;
+	float intensity;
+};
+
 layout(std430) buffer PrimitiveBuffer {
 	Object objects[];
 };
@@ -32,6 +37,7 @@ layout(std430) buffer PrimitiveBuffer {
 uniform Camera camera;
 uniform uint width;
 uniform uint height;
+writeonly uniform image2D outputTexture;
 
 // --- functions ---
 
@@ -72,7 +78,7 @@ float hitTriangle(Ray ray, Triangle tri)
 		float t = dot(P0, normal) / denom;
 		if (t < 0) return FAR_CLIP; // t goes to opposite direction
 
-		vec3 P = ray.origin + (tri * ray.direction); // Point where ray hits plane
+		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
 
 		// Compute vectors
 		AP = P - tri.pointA.xyz;
@@ -91,14 +97,23 @@ float hitTriangle(Ray ray, Triangle tri)
 
 		// Check if point is in triangle
 		if ((u >= 0) && (v >= 0) && (u + v < 1))
-			return tri;
+			return t;
 		else
 			return FAR_CLIP;
     }
 }
 
-vec3 calculateColor(vec3 hitPoint, Light light;) {
-
+vec4 calculateColor(vec3 hitPoint, int objectID, Light light;) {
+	float distance = distance(hitPoint, light.position);
+	if (distance >= light.intensity) {
+		vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+		return color;
+	}
+	float brightness = ((light.intensity - distance) / light.intensity);
+	//TODO needs to be changed accoring to color buffer
+	vec4 originalColor = object[objectID].color;
+	vec4 color(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness, originalColor.w));
+	return color;
 }
 
 layout(local_size_variable) in; // work group size = 16
@@ -106,10 +121,12 @@ void main()
 {
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
+	vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+	Ray ray = initRay(x, y);
 
 	//brute force triangle hits
-	Ray ray = initRay(x, y);
 	float nearestTriangle = FAR_CLIP;
+	int nearestObjectID;
 	for (int i = 0; i < objects.length(), i++) {
 
 		//check if ray hits triangle
@@ -118,6 +135,7 @@ void main()
 		//save scalar to nearest triangle
 		if (rayScalar < nearestTriangle) {
 			nearestTriangle = rayScalar;
+			nearestObjectID = i;
 		}
 	}
 
@@ -125,7 +143,7 @@ void main()
 	if (nearestTriangle < FAR_CLIP) {
 
 		//calculate hit point
-		hitPoint = ray.origin + (rayScalar * ray.dir);
+		hitPoint = ray.origin + (rayScalar * ray.direction);
 
 		//create ray to light
 		Ray toLight(hitPoint, (light.position - hitPoint));
@@ -136,18 +154,17 @@ void main()
 			float lightScalar = hitTriangle(toLight, light.position);
 
 			//if shadow was found then set bool and stop searching for more shadows
-			if (lightScalar < Far_CLIP) {
+			if (lightScalar < FAR_CLIP) {
 				shadow = true;
 				break;
 			}
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
-			vec3 color = calculateColor(hitPoint, light)
+			color = calculateColor(hitPoint, nearestObjectID, light)
 		}
 
-		//TODO: write color onto pixel
 	}
-
+	imageStore(outputTexture, ivec2(x, y), color);
 
 }
