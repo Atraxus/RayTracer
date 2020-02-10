@@ -71,10 +71,62 @@ float hitTriangle(Ray r, Triangle t)
     }
 }
 
+vec3 calculateColor(vec3 hitPoint, Light light;) {
+
+}
+
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 
+	//brute force triangle hits
+	Ray ray = initRay(x, y);
+	float nearestTriangle = FAR_CLIP;
+	for (int i = 0; i < objects.length(), i++) {
+
+		//check if ray hits triangle
+		float rayScalar = hitTriangle(ray, objects[i]);
+
+		//save scalar to nearest triangle
+		if (rayScalar < nearestTriangle) {
+			nearestTriangle = rayScalar;
+		}
+	}
+
+	//if triangle was hit..
+	if (nearestTriangle < FAR_CLIP) {
+
+		//calculate hit point
+		hitPoint = ray.origin + (rayScalar * ray.dir);
+
+		//create ray to light
+		Ray toLight(hitPoint, (light.position - hitPoint));
+
+		//brute force triangles to find shadows
+		bool shadow = false;
+		for (int j = 0; j < objects.length(), j++) {
+			float lightScalar = hitTriangle(toLight, light.position);
+
+			//if shadow was found then set bool and stop searching for more shadows
+			if (lightScalar < Far_CLIP) {
+				shadow = true;
+				break;
+			}
+		}
+		//if light hits point then calculate color
+		if (!shadow) {
+			vec3 color = calculateColor(hitPoint, light)
+		}
+
+		//TODO: write color onto pixel
+	}
+
+
+			
+			
+			
+		}
+	}
 
 }
