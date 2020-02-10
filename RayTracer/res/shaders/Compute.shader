@@ -62,7 +62,7 @@ float hitTriangle(Ray ray, Triangle tri)
     vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
     vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
 	//calculate normal
-	normal = cross(AB, AC); // need to normalize?
+	vec3 normal = cross(AB, AC); // need to normalize?
 	
 
     if(dot(ray.direction, normal) <= 0.000001){ // no definite solution
@@ -73,7 +73,7 @@ float hitTriangle(Ray ray, Triangle tri)
 		float denom = dot(normal, ray.direction);
 		if (denom <= 0.000001) return FAR_CLIP; // ray and normal orthogonal?
 
-		float P0 = tri.pointA - ray.origin;
+		vec3 P0 = tri.pointA - ray.origin;
 
 		float t = dot(P0, normal) / denom;
 		if (t < 0) return FAR_CLIP; // t goes to opposite direction
@@ -81,19 +81,19 @@ float hitTriangle(Ray ray, Triangle tri)
 		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
 
 		// Compute vectors
-		AP = P - tri.pointA.xyz;
+		vec3 AP = P - tri.pointA.xyz;
 
 		// Compute dot products
-		dot00 = dot(AC, AC)
-		dot01 = dot(AC, AB)
-		dot02 = dot(AC, AP)
-		dot11 = dot(AB, AB)
-		dot12 = dot(AB, AP)
+		float dot00 = dot(AC, AC);
+		float dot01 = dot(AC, AB);
+		float dot02 = dot(AC, AP);
+		float dot11 = dot(AB, AB);
+		float dot12 = dot(AB, AP);
 
 		// Compute barycentric coordinates
-		invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-		u = (dot11 * dot02 - dot01 * dot12) * invDenom
-		v = (dot00 * dot12 - dot01 * dot02) * invDenom
+		float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+		float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
 		// Check if point is in triangle
 		if ((u >= 0) && (v >= 0) && (u + v < 1))
@@ -103,7 +103,7 @@ float hitTriangle(Ray ray, Triangle tri)
     }
 }
 
-vec4 calculateColor(vec3 hitPoint, int objectID, Light light;) {
+vec4 calculateColor(vec3 hitPoint, int objectID, Light light) {
 	float distance = distance(hitPoint, light.position);
 	if (distance >= light.intensity) {
 		vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -161,7 +161,7 @@ void main()
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
-			color = calculateColor(hitPoint, nearestObjectID, light)
+			color = calculateColor(hitPoint, nearestObjectID, light);
 		}
 
 	}
