@@ -27,6 +27,12 @@
 #include "Camera/Camera.h"
 #include "Light/light.h"
 
+// Structs
+struct Triangle {
+    glm::vec3 pointA, pointB, pointC;
+};
+
+
 // ---------------- MAIN ----------------
 int main(void)
 {
@@ -195,13 +201,41 @@ int main(void)
         
         
         // --- Compute shader stuff
-        /*unsigned int raycount = 1920 * 1080;
 
-        glm::vec4 positions[raycount];
-        glm::vec4 directions[raycount];
-        glm::vec4 colors[raycount];
+        // Form positions to three vertices per triangle and 
+        // create bufferobject with all the triangles as structs
+        // VertexBufferLayout getElements() to check Layout for reading the positions into triangles
+        // and use indices
+
+        std::vector<Triangle> triangles;
+        {
+            Triangle triangle;
+            int j = 0;
+            for (int i = 0; i < 28 * 9; i += 9) {
+                switch (j) {
+                case 0:
+                    triangle.pointA = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
+                    j++;
+                    break;
+                case 1:
+                    triangle.pointB = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
+                    j++;
+                    break;
+                case 2:
+                    triangle.pointC = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
+                    triangles.push_back(triangle);
+                    i -= 9 * 2;
+                    j = 0;
+                    break;
+                }
+            }
+        }
+
+        /*glm::vec4 positions[] = malloc();
+        glm::vec4 directions[] = malloc();
+        glm::vec4 colors[] = malloc();
         
-        ShaderStorageBuffer posSSBO(raycount, positions);*/
+        ShaderStorageBuffer posSSBO(n, positions);*/
 
         // ---
 
