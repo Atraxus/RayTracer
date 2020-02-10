@@ -209,27 +209,29 @@ int main(void)
         // and use indices
 
         std::vector<Triangle> triangles;
-        {
-            Triangle triangle;
-            int j = 0;
-            for (int i = 0; i < 28 * 9; i += 9) {
-                switch (j) {
-                case 0:
-                    triangle.pointA = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
-                    j++;
-                    break;
-                case 1:
-                    triangle.pointB = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
-                    j++;
-                    break;
-                case 2:
-                    triangle.pointC = glm::vec3(positions[i], positions[i + 1], positions[i + 2]);
-                    triangles.push_back(triangle);
-                    i -= 9 * 2;
-                    j = 0;
-                    break;
-                }
-            }
+        Triangle triangle;
+        for (int i = 0; i < 42; i+=3) {
+            int ia = indices[i];
+            int ib = indices[i + 1];
+            int ic = indices[i + 2];
+
+            float x = positions[ia * 9];
+            float y = positions[ia * 9 + 1];
+            float z = positions[ia * 9 + 2];
+            triangle.pointA = glm::vec3(x, y, z);
+
+            x = positions[ib * 9];
+            y = positions[ib * 9 + 1];
+            z = positions[ib * 9 + 2];
+            triangle.pointB = glm::vec3(x, y, z);
+
+            x = positions[ic * 9];
+            y = positions[ic * 9 + 1];
+            z = positions[ic * 9 + 2];
+            triangle.pointC = glm::vec3(x, y, z);
+
+
+            triangles.push_back(triangle);
         }
 
         GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
@@ -247,12 +249,7 @@ int main(void)
 
         ComputeShader cs("res/shaders/Compute.shader");
 
-        /*glm::vec4 positions[] = malloc();
-        glm::vec4 directions[] = malloc();
-        glm::vec4 colors[] = malloc();
-        
-        ShaderStorageBuffer posSSBO(n, positions);*/
-
+        glDispatchCompute(1920 / 16, 1080 / 16, 1);
         // ---
 
 
