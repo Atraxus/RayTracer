@@ -11,14 +11,9 @@ struct Camera {
 	float tanFovX;
 };
 
-// Object types still need to be defined 
-struct Object {
-	Primitive p;
-	int type;
-};
-
 struct Triangle {
     vec3 pointA, pointB, pointC;
+	vec4 color;
 };
 
 struct Ray{
@@ -31,15 +26,14 @@ struct Light {
 	float intensity;
 };
 
-
-layout(std430) buffer PrimitiveBuffer {
-	Object objects[];
+layout(std430) buffer TriangleBuffer {
+	Triangle triangles[];
 };
 
 // --- uniforms --- 
 uniform Camera camera;
-uniform uint width;
-uniform uint height;
+uniform int width;
+uniform int height;
 writeonly uniform image2D outputTexture;
 
 // --- functions ---
@@ -106,15 +100,14 @@ float hitTriangle(Ray ray, Triangle tri)
     }
 }
 
-vec4 calculateColor(vec3 hitPoint, int objectID, Light light) {
+vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	float distance = distance(hitPoint, light.position);
 	if (distance >= light.intensity) {
 		vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
 		return color;
 	}
 	float brightness = ((light.intensity - distance) / light.intensity);
-	//TODO needs to be changed accoring to color buffer
-	vec4 originalColor = object[objectID].color;
+	vec4 originalColor = colors[colorID];
 	vec4 color(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness, originalColor.w));
 	return color;
 }
@@ -130,10 +123,10 @@ void main()
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
-	for (int i = 0; i < objects.length(), i++) {
+	for (int i = 0; i < triangles.length(), i++) {
 
 		//check if ray hits triangle
-		float rayScalar = hitTriangle(ray, objects[i]);
+		float rayScalar = hitTriangle(ray, triangles[i]);
 
 		//save scalar to nearest triangle
 		if (rayScalar < nearestTriangle) {
@@ -153,7 +146,7 @@ void main()
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j < objects.length(), j++) {
+		for (int j = 0; j < triangles.length(), j++) {
 			float lightScalar = hitTriangle(toLight, light.position);
 
 			//if shadow was found then set bool and stop searching for more shadows

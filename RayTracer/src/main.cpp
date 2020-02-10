@@ -31,6 +31,7 @@
 // Structs
 struct Triangle {
     glm::vec3 pointA, pointB, pointC;
+    glm::vec4 color;
 };
 
 
@@ -230,6 +231,12 @@ int main(void)
             z = positions[ic * 9 + 2];
             triangle.pointC = glm::vec3(x, y, z);
 
+            float r = positions[ia * 9 + 5];
+            float g = positions[ia * 9 + 6];
+            float b = positions[ia * 9 + 7];
+            float a = positions[ia * 9 + 8];
+            triangle.color = glm::vec4(r, g, b, a);
+
 
             triangles.push_back(triangle);
         }
@@ -260,6 +267,11 @@ int main(void)
 
 
         glDispatchCompute(1920 / 8, 1080 / 8, 1);
+        //cs.SetUniform
+
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
+        glDispatchCompute(1920 / 16, 1080 / 16, 1);
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
         // ---
 
 
