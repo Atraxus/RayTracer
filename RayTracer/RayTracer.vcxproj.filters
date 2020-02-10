@@ -78,6 +78,9 @@
     <ClCompile Include="src\RayTracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shader\ComputeShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1282,6 +1285,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RayTracer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\ComputeShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
