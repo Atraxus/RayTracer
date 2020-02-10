@@ -249,7 +249,17 @@ int main(void)
 
         ComputeShader cs("res/shaders/Compute.shader");
 
-        glDispatchCompute(1920 / 16, 1080 / 16, 1);
+		//uniforms
+		cs.SetUniform3f("Camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		cs.SetUniform3f("Camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+		//needs to be changed according to view direction
+		cs.SetUniform3f("Camera.xAxis", 1.0f, 0.0f, 0.0f);
+		cs.SetUniform3f("Camera.yAxis", 0.0f, 1.0f, 0.0f);
+		cs.SetUniform1f("Camera.tanFovY", (float)tan(glm::radians(45.0f)));
+		cs.SetUniform1f("Camera.tanFovX", (float)tan(glm::radians(45.0f)));
+
+
+        glDispatchCompute(1920 / 8, 1080 / 8, 1);
         // ---
 
 

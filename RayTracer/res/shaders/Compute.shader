@@ -3,10 +3,12 @@
 
 
 struct Camera {
-	vec4 position;
-	vec4 direction;
-	float FovX;
-	float FovY;
+	vec3 position;
+	vec3 direction;
+	vec3 yAxis;
+	vec3 xAxis;
+	float tanFovY;
+	float tanFovX;
 };
 
 // Object types still need to be defined 
@@ -28,6 +30,7 @@ struct Light {
 	vec3 position;
 	float intensity;
 };
+
 
 layout(std430) buffer PrimitiveBuffer {
 	Object objects[];
@@ -52,7 +55,7 @@ Ray initRay(uint x, uint y)
 
 	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 
-	return Ray(camera.pos.xyz, direction);
+	return Ray(camera.position.xyz, direction);
 }
 
 // return FAR_CLIP on miss and 
@@ -116,7 +119,7 @@ vec4 calculateColor(vec3 hitPoint, int objectID, Light light) {
 	return color;
 }
 
-layout(local_size_variable) in; // work group size = 16
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
