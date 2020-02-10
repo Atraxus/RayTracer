@@ -39,14 +39,20 @@ float hitTriangle(Ray r, Triangle t)
 	normal = cross(AB, AC);
 	
 
-    if(dot(r.dir, normal)==0){ // no definite solution
+    if(dot(r.dir, normal) <= 0.000001){ // no definite solution
         return FAR_CLIP;
     } 
 	else {
 		//calculate scalar for ray
-		float t = ((t.A - ray.origin) * normal) / (r.dir * normal);
-		vec3 P = ray.origin + (t * r.dir);
+		float denom = dot(normal, r.dir);
+		if (denom <= 0.000001) return FAR_CLIP;
 
+		float p0 = t.A - ray.origin;
+
+		float t = dot(p0, normal) / denom;
+		if (t <= 0) return FAR_CLIP;
+
+		vec3 P = ray.origin + (t * r.dir);
 
 		// Compute vectors
 		AP = P - t.A.xyz;
