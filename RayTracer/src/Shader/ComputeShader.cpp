@@ -93,7 +93,7 @@ unsigned int ComputeShader::CompileShader(unsigned int type, const std::string& 
         GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)alloca(length * sizeof(char)); // allocate on the stack dynamically instead of the heap --- this shouldnt get to big as it can blow out the stack
         GLCall(glGetShaderInfoLog(id, length, &length, message));
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+        std::cout << "Failed to compile compute shader" << std::endl;
         std::cout << message << std::endl;
         GLCall(glDeleteShader(id));
         return 0;

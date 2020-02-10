@@ -249,7 +249,11 @@ int main(void)
 
         ComputeShader cs("res/shaders/Compute.shader");
 
+        //cs.SetUniform
+
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
         glDispatchCompute(1920 / 16, 1080 / 16, 1);
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
         // ---
 
 
