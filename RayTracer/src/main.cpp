@@ -259,21 +259,23 @@ int main(void)
 		//uniforms
 		cs.SetUniform3f("Camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 		cs.SetUniform3f("Camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+
 		//needs to be changed according to view direction
 		cs.SetUniform3f("Camera.xAxis", 1.0f, 0.0f, 0.0f);
 		cs.SetUniform3f("Camera.yAxis", 0.0f, 1.0f, 0.0f);
+
 		cs.SetUniform1f("Camera.tanFovY", (float)tan(glm::radians(45.0f)));
 		cs.SetUniform1f("Camera.tanFovX", (float)tan(glm::radians(45.0f)));
+		//TODO: dynamic triangle count
+		cs.SetUniform1i("triangleCount", 14);
 
-
-        glDispatchCompute(1920 / 8, 1080 / 8, 1);
-        //cs.SetUniform
+		cs.SetUniform3f("light.position", light.getX(), light.getY(), light.getZ());
+		cs.SetUniform1f("light.intensity", light.getIntensity());
 
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
         glDispatchCompute(1920 / 16, 1080 / 16, 1);
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
         // ---
-
 
         glm::vec3 translationA(0, 0, 0);
         /*glm::vec3 translationB(0, 0, 0);*/
