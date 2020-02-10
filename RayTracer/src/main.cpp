@@ -31,6 +31,7 @@
 // Structs
 struct Triangle {
     glm::vec3 pointA, pointB, pointC;
+    glm::vec4 color;
 };
 
 
@@ -229,6 +230,12 @@ int main(void)
             y = positions[ic * 9 + 1];
             z = positions[ic * 9 + 2];
             triangle.pointC = glm::vec3(x, y, z);
+
+            float r = positions[ia * 9 + 5];
+            float g = positions[ia * 9 + 6];
+            float b = positions[ia * 9 + 7];
+            float a = positions[ia * 9 + 8];
+            triangle.color = glm::vec4(r, g, b, a);
 
 
             triangles.push_back(triangle);
