@@ -1,20 +1,39 @@
 #version 430
 #define FAR_CLIP 1000.0f
 
-layout(local_size_variable) in; // work group size = 16
 
-layout(std430) buffer PrimitiveBuffer {
-    Object objects[];
+struct Camera {
+	vec4 position;
+	vec4 direction;
+	float FovX;
+	float FovY;
+};
+
+// Object types still need to be defined 
+struct Object {
+	Primitive p;
+	int type;
 };
 
 struct Triangle {
-    vec3 A, B, C;
+    vec3 pointA, pointB, pointC;
 };
 
 struct Ray{
     vec3 origin;
-    vec3 dir;
+    vec3 direction;
 };
+
+layout(std430) buffer PrimitiveBuffer {
+	Object objects[];
+};
+
+// --- uniforms --- 
+uniform Camera camera;
+uniform uint width;
+uniform uint height;
+
+// --- functions ---
 
 // Initialize the primary ray for pixel x, y
 Ray initRay(uint x, uint y)
@@ -25,31 +44,38 @@ Ray initRay(uint x, uint y)
 	float a = camera.tanFovX * ((float(x) - halfWidth + 0.5f) / halfWidth);
 	float b = camera.tanFovY * ((halfHeight - float(y) - 0.5f) / halfHeight);
 
-	vec3 dir = normalize((a * camera.xAxis + b * camera.yAxis + camera.dir).xyz);
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 
-	return Ray(camera.pos.xyz, dir);
+	return Ray(camera.pos.xyz, direction);
 }
 
 // return FAR_CLIP on miss and 
-float hitTriangle(Ray r, Triangle t)
+float hitTriangle(Ray ray, Triangle tri)
 {
-    vec3 AB = t.B.xyz - t.A.xyz;
-    vec3 AC = t.C.xyz - t.A.xyz;
+	// calculate vectors from points A to B and A to C
+    vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
+    vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
 	//calculate normal
-	normal = cross(AB, AC);
+	normal = cross(AB, AC); // need to normalize?
 	
 
-    if(dot(r.dir, normal)==0){ // no definite solution
+    if(dot(ray.direction, normal) <= 0.000001){ // no definite solution
         return FAR_CLIP;
     } 
 	else {
 		//calculate scalar for ray
-		float t = ((t.A - ray.origin) * normal) / (r.dir * normal);
-		vec3 P = ray.origin + (t * r.dir);
+		float denom = dot(normal, ray.direction);
+		if (denom <= 0.000001) return FAR_CLIP; // ray and normal orthogonal?
 
+		float P0 = tri.pointA - ray.origin;
+
+		float t = dot(P0, normal) / denom;
+		if (t < 0) return FAR_CLIP; // t goes to opposite direction
+
+		vec3 P = ray.origin + (tri * ray.direction); // Point where ray hits plane
 
 		// Compute vectors
-		AP = P - t.A.xyz;
+		AP = P - tri.pointA.xyz;
 
 		// Compute dot products
 		dot00 = dot(AC, AC)
@@ -65,7 +91,7 @@ float hitTriangle(Ray r, Triangle t)
 
 		// Check if point is in triangle
 		if ((u >= 0) && (v >= 0) && (u + v < 1))
-			return t;
+			return tri;
 		else
 			return FAR_CLIP;
     }
@@ -75,6 +101,7 @@ vec3 calculateColor(vec3 hitPoint, Light light;) {
 
 }
 
+layout(local_size_variable) in; // work group size = 16
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
@@ -122,11 +149,5 @@ void main()
 		//TODO: write color onto pixel
 	}
 
-
-			
-			
-			
-		}
-	}
 
 }
