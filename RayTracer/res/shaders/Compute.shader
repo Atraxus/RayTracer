@@ -37,6 +37,7 @@ layout(std430) buffer PrimitiveBuffer {
 uniform Camera camera;
 uniform uint width;
 uniform uint height;
+writeonly uniform image2D outputTexture;
 
 // --- functions ---
 
@@ -104,10 +105,15 @@ float hitTriangle(Ray ray, Triangle tri)
 
 vec4 calculateColor(vec3 hitPoint, int objectID, Light light;) {
 	float distance = distance(hitPoint, light.position);
+	if (distance >= light.intensity) {
+		vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+		return color;
+	}
 	float brightness = ((light.intensity - distance) / light.intensity);
 	//TODO needs to be changed accoring to color buffer
 	vec4 originalColor = object[objectID].color;
 	vec4 color(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness, originalColor.w));
+	return color;
 }
 
 layout(local_size_variable) in; // work group size = 16
@@ -158,8 +164,7 @@ void main()
 			color = calculateColor(hitPoint, nearestObjectID, light)
 		}
 
-		//TODO: write color onto pixel
 	}
-
+	imageStore(outputTexture, ivec2(x, y), color);
 
 }
