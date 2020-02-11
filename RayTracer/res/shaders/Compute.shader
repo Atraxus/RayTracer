@@ -70,23 +70,30 @@ float hitTriangle(Ray ray, Triangle tri)
 	// calculate vectors from points A to B and A to C
     vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
     vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
+	if (AB.x <= 0.01 && AB.x >= -0.01)
+		if (AB.y <= 0.01 && AB.y >= -0.01)
+			if (AB.z <= 0.01 && AB.z >= -0.01)
+				imageStore(outputTexture, ivec2(500, 500), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	//calculate normal
 	vec3 normal = getNormal(tri);
-	
 
     if(dot(ray.direction, normal) <= 0.000001){ // no definite solution
         return FAR_CLIP;
     } 
 	else {
 		//calculate scalar for ray
+		ray.direction = normalize(ray.direction);
 		float denom = dot(normal, ray.direction);
-		if (denom <= 0.000001) return FAR_CLIP; // ray and normal orthogonal?
+		if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
 
 		vec3 P0 = tri.pointA - ray.origin;
+		float temp = dot(P0, normal);
 
-		float t = dot(P0, normal) / denom;
-		if (t < 0) return FAR_CLIP; // t goes to opposite direction
+		float t =temp / denom;
+		if (t < 0.0f) { return 5.0f; } // t goes to opposite direction
+
+
 
 		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
 
@@ -106,10 +113,12 @@ float hitTriangle(Ray ray, Triangle tri)
 		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
 		// Check if point is in triangle
-		if ((u >= 0) && (v >= 0) && (u + v < 1))
+		if ((u >= 0) && (v >= 0) && (u + v < 1)) {
 			return t;
-		else
+		}
+		else {
 			return FAR_CLIP;
+		}
     }
 }
 
@@ -149,9 +158,11 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 			nearestObjectID = i;
 		}
 	}
+	//color = vec4((nearestTriangle/FAR_CLIP)-0.5f, 0.0f, 0.0f, 1.0f);
 
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
+		color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 		//calculate hit point
 		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
@@ -167,12 +178,15 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 			//if shadow was found then set bool and stop searching for more shadows
 			if (lightScalar < FAR_CLIP) {
+
+				color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 				shadow = true;
 				break;
 			}
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
+
 			color = calculateColor(hitPoint, nearestObjectID, light);
 		}
 		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -183,8 +197,9 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 			tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
 		}
 		*/
-		return color; //+= 0.5f * tempColor;
+		 //+= 0.5f * tempColor;
 	}
+	return color;
 }
 
 
@@ -197,6 +212,6 @@ void main()
 	Ray ray = initRay(x, y);
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 1);
-	imageStore(outputTexture, ivec2(x, y), vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	imageStore(outputTexture, ivec2(x, y), color);
 
 }
