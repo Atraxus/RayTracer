@@ -254,8 +254,8 @@ int main(void)
             triangles.push_back(triangle);
         }
 
-        unsigned int numTriangles = triangles.size();
 
+        unsigned int numTriangles = triangles.size();
         Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
         ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
         triangleSSBO.Bind(1);
