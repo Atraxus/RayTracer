@@ -63,7 +63,7 @@ public:
 
 		//calculate normal
 		glm::vec3 normal = glm::cross(AB, AC); // need to normalize?
-
+		normal = glm::normalize(normal);
 		return normal;
 	}
 
@@ -87,14 +87,14 @@ public:
 
 		//calculate normal
 		glm::vec3 normal = getNormal(tri);
-		if (dot(ray.direction, normal) <= 0.000001) { // no definite solutions
+		float denom = abs(dot(normal, ray.direction));
+		if (denom <= 0.000001) { // no definite solutions
 			return FAR_CLIP;
 		}
 		else {
 			//calculate scalar for ray
 			//ray.direction = normalize(ray.direction);
-			float denom = dot(normal, ray.direction);
-			if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
+			//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
 
 			glm::vec3 P0 = tri.pointA - ray.origin;
 			float temp = dot(P0, normal);
@@ -177,8 +177,8 @@ public:
 	void run(void)
 	{
 		// TODO: iterating x and y needed
-		unsigned int x = 500;
-		unsigned int y = 500;
+		unsigned int x = 960;
+		unsigned int y = 540;
 		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Ray ray = initRay(x, y);
 

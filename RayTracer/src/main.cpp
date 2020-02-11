@@ -228,7 +228,7 @@ int main(void)
 
         // ------- TESTING -------
 
-        ComputeSimulator compSim(trisPtr, camera.getFovX(), camera.getFovY(), (int)numTriangles, 1920, 1080);
+        ComputeSimulator compSim(trisPtr, tan(glm::radians(45.0f)), tan(glm::radians(45.0f)), (int)numTriangles, 1920, 1080);
         compSim.run();
 
 
