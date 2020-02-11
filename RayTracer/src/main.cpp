@@ -81,8 +81,8 @@ int main(void)
                  2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
                 //left
                 -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
-                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
                 -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
                 -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
                 //right
                  2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
@@ -95,10 +95,10 @@ int main(void)
                  2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
                  2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
                 //back
-                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
-                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
                 -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
                  2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
 
                  //bottom
                 -100.0f, -3.0f,  100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f,
@@ -232,7 +232,7 @@ int main(void)
         ImGui::StyleColorsDark();
     // ---
 
-        glm::vec3 newViewDir(0.0f);// = camera.getViewDirection();
+        glm::vec3 newViewDir = camera.getViewDirection();
         glm::vec3 newPos(0.0f, 32.0f, 15.0f);
         
         /* Loop until the user closes the window */
@@ -265,8 +265,8 @@ int main(void)
             ImGui::SliderFloat("New Pos (z)", &newPos.z, -50.0f, 50.0f);
             if (ImGui::Button("New Pos (z) = 0")) newPos.z = 0.0f;
 
-            camera.setPosition(newPos);
             camera.setViewDirection(newViewDir);
+            camera.setPosition(newPos);
 
             std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
 
