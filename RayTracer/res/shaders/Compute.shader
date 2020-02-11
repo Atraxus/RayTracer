@@ -101,18 +101,17 @@ float hitTriangle(Ray ray, Triangle tri)
 			}
 		}
 	}
+
 	float denom = dot(normal, ray.direction);
-    if(denom <= 0.000001){ // no definite solutions
-        return FAR_CLIP;
-    } 
-	else {
+	if (denom > 0.000001) 
+	{
 		//calculate scalar for ray
 		//ray.direction = normalize(ray.direction);
 		if (isnan(ray.direction.x))
 			imageStore(outputTexture, ivec2(400, 1000), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
 
-		vec3 P0 = tri.pointA - ray.origin;
+		vec3 P0L0 = tri.pointA - ray.origin;
 		float temp = dot(P0, normal);
 
 		float t =temp / denom;
@@ -144,10 +143,8 @@ float hitTriangle(Ray ray, Triangle tri)
 		if ((u >= 0) && (v >= 0) && (u + v < 1)) {
 			return t;
 		}
-		else {
-			return FAR_CLIP;
-		}
     }
+	return FAR_CLIP;
 }
 
 Ray calculateReflectionRay(Ray ray, int nearestObjectID, vec3 hitPoint) {
@@ -198,7 +195,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
 		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		color = triangles[0].color;
+		//color = triangles[0].color;
 		////calculate hit point
 		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
