@@ -32,10 +32,9 @@
 #include "ComputeSimulator.hpp"
 
 // Structs
-//struct Triangle {
-//    glm::vec3 pointA, pointB, pointC;
-//    glm::vec4 color;
-//};
+struct Triangle {
+    glm::vec3 pointA, pointB, pointC;
+};
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -142,42 +141,38 @@ int main(void)
         glm::mat4 Model = glm::mat4(1.0f);
         
     // --- Compute shader stuff
-        std::vector<Triangle> triangles;
-        Triangle triangle;
+        Triangle triangles[14];
+        glm::vec4 colors[14];
         for (int i = 0; i < 42; i+=3) {
             int ia = indices[i];
             int ib = indices[i + 1];
             int ic = indices[i + 2];
 
-            float x = positions[ia * 9];
-            float y = positions[ia * 9 + 1];
-            float z = positions[ia * 9 + 2];
-            triangle.pointA = glm::vec3(x, y, z);
+            float ax = positions[ia * 9];
+            float ay = positions[ia * 9 + 1];
+            float az = positions[ia * 9 + 2];
 
-            x = positions[ib * 9];
-            y = positions[ib * 9 + 1];
-            z = positions[ib * 9 + 2];
-            triangle.pointB = glm::vec3(x, y, z);
+            float bx = positions[ib * 9];
+            float by = positions[ib * 9 + 1];
+            float bz = positions[ib * 9 + 2];
 
-            x = positions[ic * 9];
-            y = positions[ic * 9 + 1];
-            z = positions[ic * 9 + 2];
-            triangle.pointC = glm::vec3(x, y, z);
+            float cx = positions[ic * 9];
+            float cy = positions[ic * 9 + 1];
+            float cz = positions[ic * 9 + 2];
 
             float r = positions[ia * 9 + 5];
             float g = positions[ia * 9 + 6];
             float b = positions[ia * 9 + 7];
             float a = positions[ia * 9 + 8];
-            triangle.color = glm::vec4(r, g, b, a);
 
-
-            triangles.push_back(triangle);
+            colors[i/3] = glm::vec4(r, g, b, a);
+            triangles[i/3] = { glm::vec3(ax, ay, az), glm::vec3(bx, by, bz), glm::vec3(cx, cy, cz) };
         }
 
-        unsigned int numTriangles = triangles.size();
-        Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
-        ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
+        ShaderStorageBuffer triangleSSBO(14 * sizeof(Triangle), triangles);
         triangleSSBO.Bind(1);
+        ShaderStorageBuffer colorsSSBO(14 * sizeof(glm::vec4), colors);
+        colorsSSBO.Bind(2);
 
         ComputeShader cs("res/shaders/Compute.shader");
         cs.Bind();
@@ -193,7 +188,7 @@ int main(void)
 		cs.SetUniform1f("camera.tanFovY", camera.getFovY());
 		cs.SetUniform1f("camera.tanFovX", camera.getFovX());
 		//TODO: dynamic triangle count
-		cs.SetUniform1i("triangleCount", numTriangles);
+		cs.SetUniform1i("triangleCount", 14);
 
 		cs.SetUniform3f("light.position", light.getX(), light.getY(), light.getZ());
 		cs.SetUniform1f("light.intensity", light.getIntensity());
@@ -206,10 +201,6 @@ int main(void)
         //Texture textureToRender("res/textures/feelsgoodman.jpg");
         textureToRender.Bind();
 
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
-        glDispatchCompute(1920 / 8, 1080 / 8, 1);
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
-
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
@@ -217,14 +208,19 @@ int main(void)
         shader.Unbind();
         textureToRender.Unbind();
         cs.Unbind();
+        /*aPointsSSBO.Unbind();
+        bPointsSSBO.Unbind();
+        cPointsSSBO.Unbind();*/
+        colorsSSBO.Unbind();
         triangleSSBO.Unbind();
+
 
 
 
         // ------- TESTING -------
 
-        ComputeSimulator compSim(trisPtr, camera.getFovX(), camera.getFovY(), (int)numTriangles, 1920, 1080);
-        compSim.run();
+        /*ComputeSimulator compSim(trisPtr, tan(glm::radians(45.0f)), tan(glm::radians(45.0f)), (int)numTriangles, 1920, 1080);
+        compSim.run();*/
 
 
         // -----------------------
@@ -275,7 +271,7 @@ int main(void)
             camera.setViewDirection(newViewDir);
             camera.setPosition(newPos);
 
-            std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
+            //std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
 
 
             
@@ -284,10 +280,18 @@ int main(void)
             cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 
             textureToRender.Bind();
+            /*aPointsSSBO.Bind(1);
+            bPointsSSBO.Bind(2);
+            cPointsSSBO.Bind(3);*/
             triangleSSBO.Bind(1);
-            glMemoryBarrier(GL_ALL_BARRIER_BITS);
+            colorsSSBO.Bind(2);
+
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             glDispatchCompute(1920 / 8, 1080 / 8, 1);
-            glMemoryBarrier(GL_ALL_BARRIER_BITS);
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+            /*triangleSSBO.Bind(1);
+            Triangle* returnTriangles = (Triangle*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);*/
 
             shader.Bind();
 			screenQuad.draw(textureToRender);

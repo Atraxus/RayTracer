@@ -13,7 +13,6 @@ struct Camera {
 
 struct Triangle {
     vec3 pointA, pointB, pointC;
-	vec4 color;
 };
 
 struct Ray{
@@ -26,8 +25,12 @@ struct Light {
 	float intensity;
 };
 
-layout (std430, binding=1) buffer  TriangleBuffer {
+layout(std430, binding = 1) buffer  TriangleBuffer {
 	Triangle triangles[];
+};
+
+layout(std430, binding = 2) buffer  ColorBuffer {
+	vec4 colors[];
 };
 
 // --- uniforms --- 
@@ -179,7 +182,7 @@ vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 		return vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	float brightness = ((light.intensity - distance) / light.intensity);
-	vec4 originalColor = triangles[colorID].color;
+	vec4 originalColor = colors[colorID];
 	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
 }
 
@@ -212,7 +215,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
 		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		color = triangles[4].color;
+		color = colors[0];
 		////calculate hit point
 		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
@@ -258,8 +261,8 @@ void main()
 	
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
-	for (int i = 0; i < 11; i++) {
-		imageStore(outputTexture, ivec2(200+(5*i), 200), triangles[i].color);
+	for (int i = 0; i < 13; i++) {
+		imageStore(outputTexture, ivec2(200+(5*i), 200), colors[i]);
 	}
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
