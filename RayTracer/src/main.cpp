@@ -122,7 +122,7 @@ int main(void)
 			12, 13, 14,
 			13, 14, 15,
 			//top
-			16, 17, 18,
+			16, 18, 17,
 			17, 18, 19,
 			//back
 			20, 21, 22,
@@ -265,8 +265,9 @@ int main(void)
             ImGui::SliderFloat("New Pos (z)", &newPos.z, -50.0f, 50.0f);
             if (ImGui::Button("New Pos (z) = 0")) newPos.z = 0.0f;
 
-            camera.setPosition(newPos);
+            
             camera.setViewDirection(newViewDir);
+			camera.setPosition(newPos);
 
             std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
 

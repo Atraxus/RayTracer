@@ -76,11 +76,8 @@ Ray initRay(uint x, uint y)
 	float halfWidth = float(width) / 2.0f;
 	float halfHeight = float(height) / 2.0f;
 
-	float a = ((float(x) - halfWidth + 0.5f) / halfWidth);
-	float b = ((halfHeight - float(y) - 0.5f) / halfHeight);
-	float dirx = 0.0f;
-	float diry = 0.0f;
-	float dirz = -1.0f;
+	float a = 2*((float(x) - halfWidth + 0.5f) / halfWidth);
+	float b = 2*((halfHeight - float(y) - 0.5f) / halfHeight);
 	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 	if (camera.position.x > 0)
 		imageStore(outputTexture, ivec2(100, 100), vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -177,7 +174,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 5; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -260,8 +257,13 @@ void main()
 
 	if (isnan(ray.direction.x))
 		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	if (ray.direction.x > 0)
-		//imageStore(outputTexture, ivec2(300, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+
+	if (triangles[8].pointA.x > 0.0956f) {
+		imageStore(outputTexture, ivec2(50, 50), vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	}
+
+
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 0);
 	imageStore(outputTexture, ivec2(x, y), color);
