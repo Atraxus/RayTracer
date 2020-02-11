@@ -50,6 +50,7 @@ vec3 getNormal(Triangle tri) {
 	vec3 normal = cross(AB, AC); // need to normalize?
 	return normal;
 }
+
 Ray initRay(uint x, uint y)
 {
 	float halfWidth = float(width) / 2.0f;
@@ -120,6 +121,7 @@ Ray calculateReflectionRay(Ray ray, int nearestObjectID, vec3 hitPoint) {
 	Ray reflectionRay = Ray(hitPoint, rayDirection);
 	return reflectionRay;
 }
+
 vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	float distance = distance(hitPoint, light.position);
 	if (distance >= light.intensity) {
@@ -129,7 +131,8 @@ vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	vec4 originalColor = triangles[colorID].color;
 	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
 }
-color traceRay(Ray ray, vec4 color, uint reflectionDepth) {
+
+Color traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
