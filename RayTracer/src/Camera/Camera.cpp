@@ -28,7 +28,7 @@ void Camera::setLookAt(glm::vec3 lookAt) {
 
 void Camera::setViewDirection(glm::vec3 viewDir)
 {
-	m_ViewDirection = viewDir;
+	m_ViewDirection = glm::normalize(viewDir);
 	m_Right = glm::normalize(glm::cross(m_HeadUp, m_ViewDirection));
 	m_Up = glm::cross(m_Right, m_ViewDirection);
 }

@@ -76,12 +76,12 @@ Ray initRay(uint x, uint y)
 	float halfWidth = float(width) / 2.0f;
 	float halfHeight = float(height) / 2.0f;
 
-	float a = camera.tanFovX * ((float(x) - halfWidth + 0.5f) / halfWidth);
-	float b = camera.tanFovY * ((halfHeight - float(y) - 0.5f) / halfHeight);
+	float a = ((float(x) - halfWidth + 0.5f) / halfWidth);
+	float b = ((halfHeight - float(y) - 0.5f) / halfHeight);
 	float dirx = 0.0f;
 	float diry = 0.0f;
 	float dirz = -1.0f;
-	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + vec3(dirx, diry, dirz)).xyz);
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 	if (camera.position.x > 0)
 		imageStore(outputTexture, ivec2(100, 100), vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	return Ray(camera.position.xyz, direction);
@@ -199,42 +199,42 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
-		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-		//calculate hit point
-		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
+		////calculate hit point
+		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
-		//create ray to light
-		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
+		////create ray to light
+		//Ray toLight = Ray(hitPoint, (light.position - hitPoint));
 
 
-		//brute force triangles to find shadows
-		bool shadow = false;
-		for (int j = 0; j <0; j++) {
-			float lightScalar = hitTriangle(toLight, triangles[j]);
+		////brute force triangles to find shadows
+		//bool shadow = false;
+		//for (int j = 0; j <0; j++) {
+		//	float lightScalar = hitTriangle(toLight, triangles[j]);
 
-			//if shadow was found then set bool and stop searching for more shadows
-			if (lightScalar < FAR_CLIP) {
+		//	//if shadow was found then set bool and stop searching for more shadows
+		//	if (lightScalar < FAR_CLIP) {
 
-				//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-				shadow = true;
-				break;
-			}
-		}
-		//if light hits point then calculate color
-		if (!shadow) {
+		//		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		//		shadow = true;
+		//		break;
+		//	}
+		//}
+		////if light hits point then calculate color
+		//if (!shadow) {
 
-			color = calculateColor(hitPoint, nearestObjectID, light);
-		}
-		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		//calculate reflection ray
-		/*
-		if (reflectionDepth > 0) {
-			Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
-			tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
-		}
-		*/
-		 //+= 0.5f * tempColor;
+		//	color = calculateColor(hitPoint, nearestObjectID, light);
+		//}
+		//vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		////calculate reflection ray
+		///*
+		//if (reflectionDepth > 0) {
+		//	Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
+		//	tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
+		//}
+		//*/
+		// //+= 0.5f * tempColor;
 	}
 	return color;
 }
