@@ -29,11 +29,13 @@
 #include "Camera/Camera.h"
 #include "Light/light.h"
 
+#include "ComputeSimulator.hpp"
+
 // Structs
-struct Triangle {
-    glm::vec3 pointA, pointB, pointC;
-    glm::vec4 color;
-};
+//struct Triangle {
+//    glm::vec3 pointA, pointB, pointC;
+//    glm::vec4 color;
+//};
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -221,6 +223,16 @@ int main(void)
         textureToRender.Unbind();
         cs.Unbind();
         triangleSSBO.Unbind();
+
+
+
+        // ------- TESTING -------
+
+        ComputeSimulator compSim(trisPtr, camera.getFovX(), camera.getFovY(), (int)numTriangles, 1920, 1080);
+        compSim.run();
+
+
+        // -----------------------
 
         ScreenQuad screenQuad(shader);
     // --- Compute shader stuff
