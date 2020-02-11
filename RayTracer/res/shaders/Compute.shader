@@ -197,6 +197,6 @@ void main()
 	Ray ray = initRay(x, y);
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 1);
-	imageStore(outputTexture, ivec2(x, y), color);
+	imageStore(outputTexture, ivec2(x, y), vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 }

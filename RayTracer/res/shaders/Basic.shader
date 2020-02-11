@@ -1,39 +1,27 @@
 #shader vertex
-#version 330 core
+#version 430
 
-layout(location = 0) in vec4 inVertPos;
-layout(location = 1) in vec2 inTexCoord;
-layout(location = 2) in vec4 vertexColor;
+layout(location = 0) in vec4 currentPos;
+layout(location = 1) in vec2 texPos;
 
-out vec2 passTexCoord;
-out vec4 fragmentColor;
+out vec2 ex_TexCoor;
 
-uniform mat4 u_MVP;
-//uniform mat4 u_View;
-
-void main()
+void main(void)
 {
-    // Positions 
-    gl_Position = inVertPos ;
-    // Texture coordinates
-    passTexCoord = inTexCoord;
-    // Color
-    fragmentColor = vertexColor;
-};
+    gl_Position = currentPos;
+    ex_TexCoor = texPos;
+}
 
 
 #shader fragment
-#version 330 core
+#version 430
 
-in vec2 passTexCoord;
-in vec4 fragmentColor;
+in vec2 ex_TexCoor;
 
-layout(location = 0) out vec4 color;
+out vec4 color;
 
-uniform sampler2D u_Texture;
+uniform sampler2D texture;
 
-void main()
-{
-    vec4 texColor = texture(u_Texture, passTexCoord);
-    color = texColor;
-};
+void main(void) {
+    color = texture2D(texture, ex_TexCoor);
+}

@@ -286,15 +286,15 @@ int main(void)
 		cs.SetUniform3f("light.position", light.getX(), light.getY(), light.getZ());
 		cs.SetUniform1f("light.intensity", light.getIntensity());
 
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
-        glDispatchCompute(1920 / 16, 1080 / 16, 1);
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 
-
-        //Texture textureToRender(1920, 1080);
-        Texture textureToRender("res/textures/feelsgoodman.jpg");
+        Texture textureToRender(1920, 1080);
+        //Texture textureToRender("res/textures/feelsgoodman.jpg");
         textureToRender.Bind();
+
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
+        glDispatchCompute(1920 / 8, 1080 / 8, 1);
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
         ScreenQuad screenQuad(shader);
         screenQuad.draw(textureToRender);
