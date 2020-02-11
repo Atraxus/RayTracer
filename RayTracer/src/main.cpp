@@ -289,9 +289,11 @@ int main(void)
         glDispatchCompute(1920 / 16, 1080 / 16, 1);
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
+
+
         Texture screenquad(1920, 1080);
         screenquad.Bind();
-        shader.SetUniform1i("u_Texture", screenquad.GetBindPoint());
+        shader.SetUniform1i("outputTexture", screenquad.GetBindPoint());
 
     // ---
 
