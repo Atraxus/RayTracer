@@ -37,6 +37,7 @@ uniform int height;
 writeonly uniform image2D outputTexture;
 uniform int triangleCount;
 uniform Light light;
+uniform uint reflectionDepth;
 
 // --- functions ---
 
@@ -60,8 +61,9 @@ float hitTriangle(Ray ray, Triangle tri)
 	// calculate vectors from points A to B and A to C
     vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
     vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
+
 	//calculate normal
-	vec3 normal = cross(AB, AC); // need to normalize?
+	vec3 normal = getNormal(tri);
 	
 
     if(dot(ray.direction, normal) <= 0.000001){ // no definite solution
@@ -101,7 +103,22 @@ float hitTriangle(Ray ray, Triangle tri)
 			return FAR_CLIP;
     }
 }
-
+vec3 getNormal(Triangle tri) {
+	// calculate vectors from points A to B and A to C
+	vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
+	vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
+	//calculate normal
+	vec3 normal = cross(AB, AC); // need to normalize?
+	return normal;
+}
+Ray calculateReflectionRay(Ray ray, int nearestObjectID, vec3 hitPoint) {
+	Triangle tri = triangles[nearestObjectID];
+	//reflection calculation: https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
+	vec3 normal = getNormal(tri);
+	vec3 rayDirection = ray.direction - dot((dot(2 * ray.direction, normal) / (dot(normal, normal) * dot(normal, normal))), normal);
+	Ray reflectionRay = Ray(hitPoint, rayDirection);
+	return reflectionRay;
+}
 vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	float distance = distance(hitPoint, light.position);
 	if (distance >= light.intensity) {
@@ -144,6 +161,9 @@ void main()
 
 		//create ray to light
 		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
+
+		//calculate reflection ray
+		reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
 
 		//brute force triangles to find shadows
 		bool shadow = false;

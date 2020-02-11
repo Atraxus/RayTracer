@@ -109,7 +109,7 @@ unsigned int ComputeShader::CompileShader(unsigned int type, const std::string& 
 unsigned int ComputeShader::CreateShader(const std::string& source)
 {
     GLCall(unsigned int program = glCreateProgram());
-    unsigned int shader = CompileShader(GL_VERTEX_SHADER, source);
+    unsigned int shader = CompileShader(GL_COMPUTE_SHADER, source);
 
     GLCall(glAttachShader(program, shader));
     GLCall(glLinkProgram(program)); // read doc 

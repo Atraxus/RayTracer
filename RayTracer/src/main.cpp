@@ -236,17 +236,18 @@ int main(void)
         glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
         ComputeShader cs("res/shaders/Compute.shader");
+		cs.Bind();
 
 		//uniforms
-		cs.SetUniform3f("Camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-		cs.SetUniform3f("Camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+		cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 
 		//needs to be changed according to view direction
-		cs.SetUniform3f("Camera.xAxis", 1.0f, 0.0f, 0.0f);
-		cs.SetUniform3f("Camera.yAxis", 0.0f, 1.0f, 0.0f);
+		cs.SetUniform3f("camera.xAxis", 1.0f, 0.0f, 0.0f);
+		cs.SetUniform3f("camera.yAxis", 0.0f, 1.0f, 0.0f);
 
-		cs.SetUniform1f("Camera.tanFovY", (float)tan(glm::radians(45.0f)));
-		cs.SetUniform1f("Camera.tanFovX", (float)tan(glm::radians(45.0f)));
+		cs.SetUniform1f("camera.tanFovY", (float)tan(glm::radians(45.0f)));
+		cs.SetUniform1f("camera.tanFovX", (float)tan(glm::radians(45.0f)));
 		//TODO: dynamic triangle count
 		cs.SetUniform1i("triangleCount", 14);
 
