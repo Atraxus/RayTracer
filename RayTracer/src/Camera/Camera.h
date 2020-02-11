@@ -10,9 +10,10 @@ public:
 	void setFov(float inputFov);
 	void setPosition(glm::vec3 inputPosition);
 	void setLookAt(glm::vec3 lookAt);
+	void setViewDirection(glm::vec3 viewDir);
 	
 	// getter
-	inline glm::mat4 getView() const;
+	glm::mat4 getView() const;
 	inline glm::mat4 getProj() const { return glm::perspective(m_Fov, 1.33f, 0.1f, 100.f); };
 	inline glm::vec3 getPosition() const { return m_Position; };
 	inline glm::vec3 getViewDirection() const { return m_ViewDirection; };

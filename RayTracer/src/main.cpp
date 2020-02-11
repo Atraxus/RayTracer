@@ -232,7 +232,7 @@ int main(void)
         ImGui::StyleColorsDark();
     // ---
 
-        glm::vec3 newLookAt(0.0f);
+        glm::vec3 newViewDir(0.0f);// = camera.getViewDirection();
         glm::vec3 newPos(0.0f, 32.0f, 15.0f);
         
         /* Loop until the user closes the window */
@@ -247,14 +247,14 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::SliderFloat("Look at (X)", &newLookAt.x, -50.0f, 50.0f);
-            if (ImGui::Button("Look at (X) = 0")) newLookAt.x = 0.0f;
+            ImGui::SliderFloat("View direction (X)", &newViewDir.x, -50.0f, 50.0f);
+            if (ImGui::Button("View direction (X) = 0")) newViewDir.x = 0.0f;
 
-            ImGui::SliderFloat("Look at (y)", &newLookAt.y, -50.0f, 50.0f);
-            if (ImGui::Button("Look at (y) = 0")) newLookAt.y = 0.0f;
+            ImGui::SliderFloat("View direction (y)", &newViewDir.y, -50.0f, 50.0f);
+            if (ImGui::Button("View direction (y) = 0")) newViewDir.y = 0.0f;
 
-            ImGui::SliderFloat("Look at (z)", &newLookAt.z, -50.0f, 50.0f);
-            if (ImGui::Button("Look at (z) = 0")) newLookAt.z = 0.0f;
+            ImGui::SliderFloat("View direction (z)", &newViewDir.z, -50.0f, 50.0f);
+            if (ImGui::Button("View direction (z) = 0")) newViewDir.z = 0.0f;
 
             ImGui::SliderFloat("New Pos (X)", &newPos.x, -50.0f, 50.0f);
             if (ImGui::Button("New Pos (X) = 0")) newPos.x = 0.0f;
@@ -265,8 +265,10 @@ int main(void)
             ImGui::SliderFloat("New Pos (z)", &newPos.z, -50.0f, 50.0f);
             if (ImGui::Button("New Pos (z) = 0")) newPos.z = 0.0f;
 
-            camera.setLookAt(newLookAt);
+            camera.setViewDirection(newViewDir);
             camera.setPosition(newPos);
+
+            std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
 
 
             
