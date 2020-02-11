@@ -78,9 +78,12 @@ Ray initRay(uint x, uint y)
 
 	float a = camera.tanFovX * ((float(x) - halfWidth + 0.5f) / halfWidth);
 	float b = camera.tanFovY * ((halfHeight - float(y) - 0.5f) / halfHeight);
-
-	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
-
+	float dirx = 0.0f;
+	float diry = 0.0f;
+	float dirz = -1.0f;
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + vec3(dirx, diry, dirz)).xyz);
+	if (camera.position.x > 0)
+		imageStore(outputTexture, ivec2(100, 100), vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	return Ray(camera.position.xyz, direction);
 }
 
@@ -100,7 +103,7 @@ float hitTriangle(Ray ray, Triangle tri)
 			}
 		}
 	}
-    if(dot(ray.direction, normal) <= 0.000001){ // no definite solution
+    if(dot(ray.direction, normal) <= 0.000001){ // no definite solutions
         return FAR_CLIP;
     } 
 	else {
@@ -117,9 +120,9 @@ float hitTriangle(Ray ray, Triangle tri)
 		float t =temp / denom;
 		if (isnan(temp))
 			imageStore(outputTexture, ivec2(300, 1000), vec4(0.0f, 0.0f, 1.0f, 1.0f));
-		if (t < 0.0f) { return 5.0f; } // t goes to opposite direction
+		if (t < 0.0f) { return FAR_CLIP; } // t goes to opposite direction
 		if(isnan(t))
-			imageStore(outputTexture, ivec2(500, 1000), vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			imageStore(outputTexture, ivec2(100, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 
 		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
@@ -257,8 +260,8 @@ void main()
 
 	if (isnan(ray.direction.x))
 		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	if (camera.direction.x > 0)
-		imageStore(outputTexture, ivec2(300, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	if (ray.direction.x > 0)
+		//imageStore(outputTexture, ivec2(300, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 0);
 	imageStore(outputTexture, ivec2(x, y), color);
