@@ -174,7 +174,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < 2; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -257,6 +257,8 @@ void main()
 
 	if (isnan(ray.direction.x))
 		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	if (camera.direction.x > 0)
+		imageStore(outputTexture, ivec2(300, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 0);
 	imageStore(outputTexture, ivec2(x, y), color);
