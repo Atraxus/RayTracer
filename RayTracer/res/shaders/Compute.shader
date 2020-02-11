@@ -48,7 +48,7 @@ vec3 getNormal(Triangle tri) {
 	vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
 	
 	//calculate normal
-	vec3 normal = cross(AB, AC); // need to normalize?
+	vec3 normal = cross(AC, AB); // need to normalize?
 	if (normal.x <= 0.01 && normal.x >= -0.01) {
 		if (normal.y <= 0.01 && normal.y >= -0.01) {
 			if (normal.z <= 0.01 && normal.z >= -0.01) {
@@ -112,7 +112,7 @@ float hitTriangle(Ray ray, Triangle tri)
 		//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
 
 		vec3 P0L0 = tri.pointA - ray.origin;
-		float temp = dot(P0, normal);
+		float temp = dot(P0L0, normal);
 
 		float t =temp / denom;
 		if (isnan(temp))
@@ -195,7 +195,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
 		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		//color = triangles[0].color;
+		color = triangles[0].color;
 		////calculate hit point
 		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
@@ -242,19 +242,13 @@ void main()
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 	for (int i = 0; i < 11; i++) {
-		if (triangles[i].pointB.x == triangles[i].pointC.x) {
-			if (triangles[i].pointB.y == triangles[i].pointC.y) {
-				if (triangles[i].pointB.z == triangles[i].pointC.z) {
-					imageStore(outputTexture, ivec2(1250, 500), vec4(1.0f, 0.0f, 0.0f, 1.0f));
-				}
-			}
-		}
+		imageStore(outputTexture, ivec2(200+(5*i), 200), triangles[i].color);
 	}
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
 	
-	imageStore(outputTexture, ivec2(200, 200), triangles[0].color);
+	
 
 
 	if (triangles[8].pointA.x > 0.0956f) {

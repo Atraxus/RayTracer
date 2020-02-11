@@ -137,7 +137,7 @@ int main(void)
 
 		light light(glm::vec3(0.0f, 5.0f, 10.0f), 100.0f);
 
-        Camera camera(1920, 1080, 45.0f, glm::vec3(0.0f, 32.0f, 15.0f), 
+        Camera camera(1920, 1080, 90.0f, glm::vec3(0.0f, 32.0f, 15.0f), 
             glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
         

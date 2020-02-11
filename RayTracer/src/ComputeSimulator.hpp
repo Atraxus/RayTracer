@@ -62,7 +62,7 @@ public:
 		glm::vec3 AC = tri.pointC - tri.pointA;
 
 		//calculate normal
-		glm::vec3 normal = glm::cross(AB, AC); // need to normalize?
+		glm::vec3 normal = glm::cross(AC, AB); // need to normalize?
 		normal = glm::normalize(normal);
 		return normal;
 	}
@@ -88,10 +88,10 @@ public:
 		//calculate normal
 		glm::vec3 normal = getNormal(tri);
 		float denom = dot(normal, ray.direction);
-		if (glm::abs(denom) <= 0.000001) { // no definite solutions
-			return FAR_CLIP;
-		}
-		else {
+		
+
+		if (denom > 0.000001)
+		{
 			//calculate scalar for ray
 			//ray.direction = normalize(ray.direction);
 			//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
@@ -123,10 +123,8 @@ public:
 			if ((u >= 0) && (v >= 0) && (u + v < 1)) {
 				return t;
 			}
-			else {
-				return FAR_CLIP;
-			}
 		}
+		return FAR_CLIP;
 	}
 
 	Ray calculateReflectionRay(Ray ray, int nearestObjectID, glm::vec3 hitPoint) {
@@ -177,7 +175,7 @@ public:
 	void run(void)
 	{
 		// TODO: iterating x and y needed
-		unsigned int x = 960;
+		unsigned int x = 1060;
 		unsigned int y = 540;
 		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Ray ray = initRay(x, y);
