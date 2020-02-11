@@ -259,7 +259,7 @@ int main(void)
 
         unsigned int numTriangles = triangles.size();
         ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
-        triangleSSBO.Bind();
+        triangleSSBO.Bind(1);
 
         ComputeShader cs("res/shaders/Compute.shader");
         cs.Bind();

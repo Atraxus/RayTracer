@@ -8,7 +8,7 @@ public:
 	ShaderStorageBuffer(const unsigned int size, void* data);
 	~ShaderStorageBuffer();
 
-	void Bind() const;
+	void Bind(unsigned int val) const;
 	void Unbind() const;
 
 private:
