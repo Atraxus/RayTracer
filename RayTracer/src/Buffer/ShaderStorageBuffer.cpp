@@ -11,6 +11,7 @@ ShaderStorageBuffer::ShaderStorageBuffer(const unsigned int size, void* data)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STATIC_DRAW); 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 ShaderStorageBuffer::~ShaderStorageBuffer()
@@ -21,7 +22,6 @@ ShaderStorageBuffer::~ShaderStorageBuffer()
 void ShaderStorageBuffer::Bind(unsigned int val) const
 {
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, val, m_RendererID);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 }
 
 void ShaderStorageBuffer::Unbind() const
