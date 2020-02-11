@@ -170,15 +170,17 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
-			color += 0.5f * calculateColor(hitPoint, nearestObjectID, light);
+			color = calculateColor(hitPoint, nearestObjectID, light);
 		}
 		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		//calculate reflection ray
+		/*
 		if (reflectionDepth > 0) {
 			Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
 			tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
 		}
-		return color += 0.5f * tempColor;
+		*/
+		return color; //+= 0.5f * tempColor;
 	}
 }
 
