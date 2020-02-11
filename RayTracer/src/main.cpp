@@ -256,14 +256,10 @@ int main(void)
 
         Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
 
-        GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
 
-        unsigned int trianglesSSBO;
         unsigned int numTriangles = triangles.size();
-        glGenBuffers(1, &trianglesSSBO);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, numTriangles * sizeof(Triangle), trisPtr, GL_STATIC_DRAW);
-        glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+        ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
+        triangleSSBO.Bind();
 
         ComputeShader cs("res/shaders/Compute.shader");
         cs.Bind();

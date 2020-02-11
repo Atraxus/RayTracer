@@ -5,7 +5,7 @@
 class ShaderStorageBuffer
 {
 public:
-	ShaderStorageBuffer(unsigned int const raycount, glm::vec4 data[]);
+	ShaderStorageBuffer(const unsigned int size, void* data);
 	~ShaderStorageBuffer();
 
 	void Bind() const;
