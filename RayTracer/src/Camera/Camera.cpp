@@ -1,13 +1,13 @@
 #include "Camera.h"
 
-Camera::Camera(int width, int height, float fovY, glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up) 
+Camera::Camera(int width, int height, float fovDeg, glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up) 
 	: m_Width(width), m_Height(height), m_Position(pos), m_Fov(glm::radians(45.0f)), m_LookAt(lookAt), m_HeadUp(up)
 {
 	m_ViewDirection = glm::normalize(lookAt - pos);
 	m_Right = glm::normalize(glm::cross(up, m_ViewDirection));
 	m_Up = glm::cross(m_Right, m_ViewDirection);
 
-	m_FovY = std::tan(fovY * std::acos(-1) / 180.f / 2.0f);
+	m_FovY = tan(glm::radians(fovDeg));
 	m_FovX = (static_cast<float>(m_Width)* m_FovY) / static_cast<float>(m_Height);
 }
 

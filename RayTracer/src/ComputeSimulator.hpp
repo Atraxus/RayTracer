@@ -87,8 +87,8 @@ public:
 
 		//calculate normal
 		glm::vec3 normal = getNormal(tri);
-		float denom = abs(dot(normal, ray.direction));
-		if (denom <= 0.000001) { // no definite solutions
+		float denom = dot(normal, ray.direction);
+		if (glm::abs(denom) <= 0.000001) { // no definite solutions
 			return FAR_CLIP;
 		}
 		else {
