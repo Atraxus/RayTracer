@@ -26,7 +26,7 @@ struct Light {
 	float intensity;
 };
 
-layout(std430) buffer TriangleBuffer {
+layout(std430, binding = 5) buffer TriangleBuffer {
 	Triangle triangles[];
 };
 
@@ -70,11 +70,13 @@ float hitTriangle(Ray ray, Triangle tri)
 	// calculate vectors from points A to B and A to C
     vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
     vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
-	if (AB.x <= 0.01 && AB.x >= -0.01)
-		if (AB.y <= 0.01 && AB.y >= -0.01)
-			if (AB.z <= 0.01 && AB.z >= -0.01)
+	if (AB.x <= 0.01 && AB.x >= -0.01) {
+		if (AB.y <= 0.01 && AB.y >= -0.01) {
+			if (AB.z <= 0.01 && AB.z >= -0.01) {
 				imageStore(outputTexture, ivec2(500, 500), vec4(0.0f, 1.0f, 0.0f, 1.0f));
-
+			}
+		}
+	}
 	//calculate normal
 	vec3 normal = getNormal(tri);
 
@@ -206,6 +208,13 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
 void main()
 {
+	if (triangles[1].pointA.x <= 0.01 && triangles[0].pointA.x >= -0.01) {
+		if (triangles[0].pointA.y <= 0.01 && triangles[0].pointA.y >= -0.01) {
+			if (triangles[0].pointA.z <= 0.01 && triangles[0].pointA.z >= -0.01) {
+				imageStore(outputTexture, ivec2(1000, 500), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+			}
+		}
+	}
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
