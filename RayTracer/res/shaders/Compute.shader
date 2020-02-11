@@ -102,7 +102,7 @@ float hitTriangle(Ray ray, Triangle tri)
 		}
 	}
 	float denom = dot(normal, ray.direction);
-    if(abs(denom) <= 0.000001){ // no definite solutions
+    if(denom <= 0.000001){ // no definite solutions
         return FAR_CLIP;
     } 
 	else {
@@ -256,8 +256,8 @@ void main()
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
-	if (isnan(ray.direction.x))
-		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	
+	imageStore(outputTexture, ivec2(200, 200), triangles[0].color);
 
 
 	if (triangles[8].pointA.x > 0.0956f) {
