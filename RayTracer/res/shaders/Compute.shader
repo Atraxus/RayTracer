@@ -129,7 +129,7 @@ vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	vec4 originalColor = triangles[colorID].color;
 	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
 }
-color traceRay(Ray ray, vec4 color, uint reflectionDepth) {
+vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
@@ -190,7 +190,8 @@ void main()
     uint y = gl_GlobalInvocationID.y;
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
-	color = traceRay(ray, color);
+	//substitute with ReflectionDepth
+	color = traceRay(ray, color, 1);
 	imageStore(outputTexture, ivec2(x, y), color);
 
 }
