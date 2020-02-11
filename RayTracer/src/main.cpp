@@ -133,14 +133,14 @@ int main(void)
             25, 26, 27
         };
 
-		light light(glm::vec3(0.0f, 5.0f, 10.0f), 30.0f);
+		light light(glm::vec3(0.0f, 5.0f, 10.0f), 300.0f);
 		for (int i = 0; i < 24; i++) {
 			for (int j = 5; j < 8; j++) {
 				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
 			}
 		}
 
-        Camera camera(1920, 1080, 70.0f, glm::vec3(0.0f,30.0f,0.0f), 
+        Camera camera(1920, 1080, 45.0f, glm::vec3(0.0f,0.0f, 20.0f), 
             glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
         

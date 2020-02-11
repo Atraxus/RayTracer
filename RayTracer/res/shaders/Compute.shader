@@ -59,6 +59,18 @@ vec3 getNormal(Triangle tri) {
 	return normal;
 }
 
+//Ray initRay(uint x, uint y)
+//{
+//	float halfWidth = float(width) / 2.0f;
+//	float halfHeight = float(height) / 2.0f;
+//
+//	float a = camera.tanFovX * ((float(x) - halfWidth + 0.5f) / halfWidth);
+//	float b = camera.tanFovY * ((halfHeight - float(y) - 0.5f) / halfHeight);
+//
+//	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
+//
+//	return Ray(camera.position.xyz, direction);
+//}
 Ray initRay(uint x, uint y)
 {
 	float halfWidth = float(width) / 2.0f;
@@ -195,7 +207,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j <12; j++) {
+		for (int j = 0; j <0; j++) {
 			float lightScalar = hitTriangle(toLight, triangles[j]);
 
 			//if shadow was found then set bool and stop searching for more shadows
@@ -231,7 +243,7 @@ void main()
 	
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
-	/*for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 11; i++) {
 		if (triangles[i].pointB.x == triangles[i].pointC.x) {
 			if (triangles[i].pointB.y == triangles[i].pointC.y) {
 				if (triangles[i].pointB.z == triangles[i].pointC.z) {
@@ -239,14 +251,14 @@ void main()
 				}
 			}
 		}
-	}*/
+	}
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
 	if (isnan(ray.direction.x))
 		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	//substitute with ReflectionDepth
-	color = traceRay(ray, color, 1);
+	color = traceRay(ray, color, 0);
 	imageStore(outputTexture, ivec2(x, y), color);
 
 }
