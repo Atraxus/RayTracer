@@ -158,6 +158,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RayTracer.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\ScreenQuad.cpp" />
     <ClCompile Include="src\Shader\ComputeShader.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
     <ClCompile Include="src\Buffer\ShaderStorageBuffer.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="src\Light\light.h" />
     <ClInclude Include="src\RayTracer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\ScreenQuad.h" />
     <ClInclude Include="src\Shader\ComputeShader.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\Buffer\ShaderStorageBuffer.h" />

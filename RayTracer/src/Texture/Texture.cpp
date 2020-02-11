@@ -53,6 +53,7 @@ void Texture::Bind(unsigned int slot)
 	m_Bindpoint = slot;
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+	GLCall(glBindImageTexture(0, m_RendererID, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8));
 }
 
 void Texture::Unbind() const

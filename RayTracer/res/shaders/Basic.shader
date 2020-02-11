@@ -14,7 +14,7 @@ uniform mat4 u_MVP;
 void main()
 {
     // Positions 
-    gl_Position = u_MVP * inVertPos ;
+    gl_Position = inVertPos ;
     // Texture coordinates
     passTexCoord = inTexCoord;
     // Color

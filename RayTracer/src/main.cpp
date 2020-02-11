@@ -25,6 +25,7 @@
 #include "Shader/ComputeShader.h"
 #include "Buffer/ShaderStorageBuffer.h"
 #include "Texture/Texture.h"
+#include "ScreenQuad.h"
 #include "Camera/Camera.h"
 #include "Light/light.h"
 
@@ -291,9 +292,11 @@ int main(void)
 
 
 
-        Texture screenquad(1920, 1080);
-        screenquad.Bind();
-        shader.SetUniform1i("outputTexture", screenquad.GetBindPoint());
+        Texture textureToRender(1920, 1080);
+        textureToRender.Bind();
+
+        ScreenQuad screenQuad(shader);
+        screenQuad.draw(textureToRender);
 
     // ---
 
@@ -312,72 +315,75 @@ int main(void)
             /* Render here */
             //renderer.Clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-            // --- ImGui stuff
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+            //// --- ImGui stuff
+            //ImGui_ImplOpenGL3_NewFrame();
+            //ImGui_ImplGlfw_NewFrame();
+            //ImGui::NewFrame();
+
+
+            screenQuad.draw(textureToRender);
             // ---
 
-            //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-            // View
-			camera.setPosition(glm::vec3(cameraX, cameraY, cameraZ));
-			camera.setFov(fov);
-			glm::mat4 View = camera.getView();
-			glm::mat4 Proj = camera.getProj();
+   //         //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+   //         // View
+			//camera.setPosition(glm::vec3(cameraX, cameraY, cameraZ));
+			//camera.setFov(fov);
+			//glm::mat4 View = camera.getView();
+			//glm::mat4 Proj = camera.getProj();
 
-            // Cube A
-            {
-                // Model
-                glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
-                glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXA), glm::vec3(1, 0, 0));
-                glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYA), glm::vec3(0, 1, 0));
-                glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZA), glm::vec3(0, 0, 1));
-                glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationA);
-                Model = modelTranslateMat * modelRotateMat * modelScaleMat;
+   //         // Cube A
+   //         {
+   //             // Model
+   //             glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
+   //             glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXA), glm::vec3(1, 0, 0));
+   //             glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYA), glm::vec3(0, 1, 0));
+   //             glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZA), glm::vec3(0, 0, 1));
+   //             glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationA);
+   //             Model = modelTranslateMat * modelRotateMat * modelScaleMat;
 
-                glm::mat4 mvp = Proj * View * Model; // inverted 
+   //             glm::mat4 mvp = Proj * View * Model; // inverted 
 
-                shader.Bind();
-                shader.SetUniform4Matf("u_MVP", mvp);
-                renderer.Draw(va, ib, shader);
-            }
+   //             shader.Bind();
+   //             shader.SetUniform4Matf("u_MVP", mvp);
+   //             renderer.Draw(va, ib, shader);
+   //         }
 
 
-            // --- ImGui stuff
-            ImGui::SliderFloat("cameraX", &cameraX, -50.0f, 50.0f);
-            if (ImGui::Button("cameraX = 0")) cameraX = 0.0f;
-            ImGui::SliderFloat("cameraY", &cameraY, -50.0f, 50.0f);
-            if (ImGui::Button("cameraY = 0")) cameraY = 0.0f;
-            ImGui::SliderFloat("cameraZ", &cameraZ, -50.0f, 50.0f);
-            if (ImGui::Button("cameraZ = 0")) cameraZ = 0.0f;
-            // Cube A
-            ImGui::SliderFloat("rotationXA", &rotationXA, -100.0f, 100.0f);
-            if (ImGui::Button("rotationXA = 0")) rotationXA = 0.0f;
+   //         // --- ImGui stuff
+   //         ImGui::SliderFloat("cameraX", &cameraX, -50.0f, 50.0f);
+   //         if (ImGui::Button("cameraX = 0")) cameraX = 0.0f;
+   //         ImGui::SliderFloat("cameraY", &cameraY, -50.0f, 50.0f);
+   //         if (ImGui::Button("cameraY = 0")) cameraY = 0.0f;
+   //         ImGui::SliderFloat("cameraZ", &cameraZ, -50.0f, 50.0f);
+   //         if (ImGui::Button("cameraZ = 0")) cameraZ = 0.0f;
+   //         // Cube A
+   //         ImGui::SliderFloat("rotationXA", &rotationXA, -100.0f, 100.0f);
+   //         if (ImGui::Button("rotationXA = 0")) rotationXA = 0.0f;
 
-            ImGui::SliderFloat("RotationYA", &rotationYA, -100.0f, 100.0f);
-            if (ImGui::Button("RotationYA = 0")) rotationYA = 0.0f;
+   //         ImGui::SliderFloat("RotationYA", &rotationYA, -100.0f, 100.0f);
+   //         if (ImGui::Button("RotationYA = 0")) rotationYA = 0.0f;
 
-            ImGui::SliderFloat("RotationZA", &rotationZA, -100.0f, 100.0f);
-            if (ImGui::Button("RotationZA = 0")) rotationZA = 0.0f;
+   //         ImGui::SliderFloat("RotationZA", &rotationZA, -100.0f, 100.0f);
+   //         if (ImGui::Button("RotationZA = 0")) rotationZA = 0.0f;
 
-            ImGui::SliderFloat("AX", &translationA.x, -50.0f, 50.0f);
-            if (ImGui::Button("AX = 0")) translationA.x = 0.0f;
+   //         ImGui::SliderFloat("AX", &translationA.x, -50.0f, 50.0f);
+   //         if (ImGui::Button("AX = 0")) translationA.x = 0.0f;
 
-            ImGui::SliderFloat("AY", &translationA.y, -50.0f, 50.0f);
-            if (ImGui::Button("AY = 0")) translationA.y = 0.0f;
+   //         ImGui::SliderFloat("AY", &translationA.y, -50.0f, 50.0f);
+   //         if (ImGui::Button("AY = 0")) translationA.y = 0.0f;
 
-            ImGui::SliderFloat("AZ", &translationA.z, -50.0f, 50.0f);
-            if (ImGui::Button("AZ = 0")) translationA.z = 0.0f;
+   //         ImGui::SliderFloat("AZ", &translationA.z, -50.0f, 50.0f);
+   //         if (ImGui::Button("AZ = 0")) translationA.z = 0.0f;
 
-			
-            ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
-			if (ImGui::Button("FOV = 45")) fov = 45.0f;
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            // ---
+			//
+   //         ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
+			//if (ImGui::Button("FOV = 45")) fov = 45.0f;
+   //         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+   //         ImGui::Render();
+   //         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+   //         // ---
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
@@ -387,9 +393,9 @@ int main(void)
         }
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
+    /*ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext();*/
     glfwTerminate();
     return 0;
 }
