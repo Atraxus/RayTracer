@@ -129,14 +129,7 @@ vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	vec4 originalColor = triangles[colorID].color;
 	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
 }
-
-layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
-void main()
-{
-    uint x = gl_GlobalInvocationID.x;
-    uint y = gl_GlobalInvocationID.y;
-	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	Ray ray = initRay(x, y);
+color traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
@@ -163,8 +156,6 @@ void main()
 		//create ray to light
 		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
 
-		//calculate reflection ray
-		Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
 
 		//brute force triangles to find shadows
 		bool shadow = false;
@@ -179,10 +170,27 @@ void main()
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
-			color = calculateColor(hitPoint, nearestObjectID, light);
+			color += 0.5f * calculateColor(hitPoint, nearestObjectID, light);
 		}
-
+		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		//calculate reflection ray
+		if (reflectionDepth > 0) {
+			Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
+			tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
+		}
+		return color += 0.5f * tempColor;
 	}
+}
+
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
+void main()
+{
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	Ray ray = initRay(x, y);
+	color = traceRay(ray, color);
 	imageStore(outputTexture, ivec2(x, y), color);
 
 }
