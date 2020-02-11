@@ -34,6 +34,37 @@ struct Triangle {
     glm::vec4 color;
 };
 
+//void drawScreenquad(Texture& textureToRender, const unsigned int sqID)
+//{
+//    glUseProgram(sqID);
+//    glActiveTexture(GL_TEXTURE0 + textureToRender.GetBindPoint());
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, m_vertexUVBufferID);
+//    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+//    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(glm::vec4));
+//
+//    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(1);
+//
+//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//
+//    glDisableVertexAttribArray(1);
+//    glDisableVertexAttribArray(0);
+//
+//
+//
+//
+//    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, VerticesBuffer);
+//
+//    glBindImageTexture(0, HeightMap, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+//    glUseProgram(ComputeProgram);
+//
+//    glUniform1i(glGetUniformLocation(ComputeProgram, "HeightMap"), 0);
+//
+//
+//    glDispatchCompute(1, 1, 1);
+//    glMemoryBarrier(GL_ALL_BARRIER_BITS);
+//}
 
 // ---------------- MAIN ----------------
 int main(void)
@@ -158,10 +189,10 @@ int main(void)
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
 
-        // stuff for testing texture
-        Texture texture("res/textures/feelsgoodman.jpg");
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
+        //// stuff for testing texture
+        //Texture texture("res/textures/feelsgoodman.jpg");
+        //texture.Bind();
+        //shader.SetUniform1i("u_Texture", 0);
 
 
         // unbind all buffers and shaders and vertex array
@@ -236,17 +267,18 @@ int main(void)
         glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
         ComputeShader cs("res/shaders/Compute.shader");
+        cs.Bind();
 
 		//uniforms
-		cs.SetUniform3f("Camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-		cs.SetUniform3f("Camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+		cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+		cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 
 		//needs to be changed according to view direction
-		cs.SetUniform3f("Camera.xAxis", 1.0f, 0.0f, 0.0f);
-		cs.SetUniform3f("Camera.yAxis", 0.0f, 1.0f, 0.0f);
+		cs.SetUniform3f("camera.xAxis", 1.0f, 0.0f, 0.0f);
+		cs.SetUniform3f("camera.yAxis", 0.0f, 1.0f, 0.0f);
 
-		cs.SetUniform1f("Camera.tanFovY", (float)tan(glm::radians(45.0f)));
-		cs.SetUniform1f("Camera.tanFovX", (float)tan(glm::radians(45.0f)));
+		cs.SetUniform1f("camera.tanFovY", (float)tan(glm::radians(45.0f)));
+		cs.SetUniform1f("camera.tanFovX", (float)tan(glm::radians(45.0f)));
 		//TODO: dynamic triangle count
 		cs.SetUniform1i("triangleCount", 14);
 
@@ -256,6 +288,11 @@ int main(void)
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
         glDispatchCompute(1920 / 16, 1080 / 16, 1);
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+        Texture screenquad(1920, 1080);
+        screenquad.Bind();
+        shader.SetUniform1i("u_Texture", screenquad.GetBindPoint());
+
     // ---
 
         glm::vec3 translationA(0, 0, 0);
