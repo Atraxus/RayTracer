@@ -140,7 +140,7 @@ int main(void)
 			}
 		}
 
-        Camera camera(1920, 1080, 70.0f, glm::vec3(0.0f,30.0f,0.0f), 
+        Camera camera(1920, 1080, 180.0f, glm::vec3(0.0f, 32.0f, 15.0f), 
             glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
         
@@ -216,9 +216,25 @@ int main(void)
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
+
+        shader.Unbind();
+        textureToRender.Unbind();
+        cs.Unbind();
+        triangleSSBO.Unbind();
+
         ScreenQuad screenQuad(shader);
     // --- Compute shader stuff
 
+    // --- ImGui stuff
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 130");
+        ImGui::StyleColorsDark();
+    // ---
+
+        glm::vec3 newLookAt(0.0f);
+        glm::vec3 newPos(0.0f, 32.0f, 15.0f);
+        
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
@@ -226,8 +242,51 @@ int main(void)
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
+            // --- ImGui stuff
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::SliderFloat("Look at (X)", &newLookAt.x, -50.0f, 50.0f);
+            if (ImGui::Button("Look at (X) = 0")) newLookAt.x = 0.0f;
+
+            ImGui::SliderFloat("Look at (y)", &newLookAt.y, -50.0f, 50.0f);
+            if (ImGui::Button("Look at (y) = 0")) newLookAt.y = 0.0f;
+
+            ImGui::SliderFloat("Look at (z)", &newLookAt.z, -50.0f, 50.0f);
+            if (ImGui::Button("Look at (z) = 0")) newLookAt.z = 0.0f;
+
+            ImGui::SliderFloat("New Pos (X)", &newPos.x, -50.0f, 50.0f);
+            if (ImGui::Button("New Pos (X) = 0")) newPos.x = 0.0f;
+
+            ImGui::SliderFloat("New Pos (y)", &newPos.y, -50.0f, 50.0f);
+            if (ImGui::Button("New Pos (y) = 0")) newPos.y = 0.0f;
+
+            ImGui::SliderFloat("New Pos (z)", &newPos.z, -50.0f, 50.0f);
+            if (ImGui::Button("New Pos (z) = 0")) newPos.z = 0.0f;
+
+            camera.setLookAt(newLookAt);
+            camera.setPosition(newPos);
+
+
+            
+            cs.Bind();
+            cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+            cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+
+            textureToRender.Bind();
+            triangleSSBO.Bind(1);
+            glMemoryBarrier(GL_ALL_BARRIER_BITS);
+            glDispatchCompute(1920 / 8, 1080 / 8, 1);
+            glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+            shader.Bind();
 			screenQuad.draw(textureToRender);
 
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
 
@@ -235,6 +294,11 @@ int main(void)
             glfwPollEvents();
         }
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     glfwTerminate();
     return 0;
 }

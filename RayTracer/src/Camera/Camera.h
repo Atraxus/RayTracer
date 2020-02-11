@@ -9,6 +9,7 @@ public:
 	// setter
 	void setFov(float inputFov);
 	void setPosition(glm::vec3 inputPosition);
+	void setLookAt(glm::vec3 lookAt);
 	
 	// getter
 	inline glm::mat4 getView() const;
@@ -28,6 +29,7 @@ private:
 	float m_FovX;
 
 	glm::vec3 m_Position;
+	glm::vec3 m_LookAt;
 	glm::vec3 m_ViewDirection;
 	glm::vec3 m_Up;
 	glm::vec3 m_Right;
