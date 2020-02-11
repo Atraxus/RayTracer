@@ -17,9 +17,6 @@ void Camera::setFov(float degrees) {
 
 void Camera::setPosition(glm::vec3 inputPosition){
 	m_Position = inputPosition;
-	m_ViewDirection = glm::normalize(m_LookAt - inputPosition);
-	m_Right = glm::normalize(glm::cross(glm::vec3(0.0f,1.0f,0.0f), m_ViewDirection));
-	m_Up = glm::cross(m_Right, m_ViewDirection);
 }
 
 void Camera::setLookAt(glm::vec3 lookAt) {

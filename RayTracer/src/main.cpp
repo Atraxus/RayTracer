@@ -265,8 +265,8 @@ int main(void)
             ImGui::SliderFloat("New Pos (z)", &newPos.z, -50.0f, 50.0f);
             if (ImGui::Button("New Pos (z) = 0")) newPos.z = 0.0f;
 
-            camera.setViewDirection(glm::vec3(1.0f,1.0f,1.0f));
             camera.setPosition(newPos);
+            camera.setViewDirection(newViewDir);
 
             std::cout << camera.getViewDirection().x << " " << camera.getViewDirection().y << " " << camera.getViewDirection().z << std::endl;
 
