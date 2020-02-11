@@ -165,7 +165,7 @@ int main(void)
             25, 26, 27
         };
 
-		light light(glm::vec3(-2.5f, -2.5f, 2.5f), 1000.0f);
+		light light(glm::vec3(0.0f, 5.0f, 10.0f), 1000.0f);
 		for (int i = 0; i < 24; i++) {
 			for (int j = 5; j < 8; j++) {
 				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
@@ -183,7 +183,7 @@ int main(void)
 
         IndexBuffer ib(indices, 42); // create an index buffer with given indices and the number of indices
 
-		Camera camera((glm::vec3)(0.0f, 0.0f, 0.0f), (glm::vec3)(0.0f, 0.0f, 0.0f));
+		Camera camera((glm::vec3)(0.0f, 0.0f, 10.0f), (glm::vec3)(0.0f, 0.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
 
 
@@ -258,7 +258,7 @@ int main(void)
 
 
         unsigned int numTriangles = triangles.size();
-        ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
+		ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
         triangleSSBO.Bind(1);
 
         ComputeShader cs("res/shaders/Compute.shader");
@@ -291,7 +291,7 @@ int main(void)
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
         ScreenQuad screenQuad(shader);
-        screenQuad.draw(textureToRender);
+        //screenQuad.draw(textureToRender);
     // ---
 
         glm::vec3 translationA(0, 0, 0);
@@ -317,7 +317,7 @@ int main(void)
             //ImGui::NewFrame();
 
 
-            screenQuad.draw(textureToRender);
+			screenQuad.draw(textureToRender);
             // ---
 
    //         //glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
