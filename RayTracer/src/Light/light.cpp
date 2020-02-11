@@ -28,6 +28,11 @@ float light::getBrightness(glm::vec3 inputLocation,float inputColor)
 	return color;
 }
 
+float light::getIntensity()
+{
+	return strength;
+}
+
 float light::getX()
 {
 	return position.x;

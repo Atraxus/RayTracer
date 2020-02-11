@@ -3,10 +3,12 @@
 
 
 struct Camera {
-	vec4 position;
-	vec4 direction;
-	float FovX;
-	float FovY;
+	vec3 position;
+	vec3 direction;
+	vec3 yAxis;
+	vec3 xAxis;
+	float tanFovY;
+	float tanFovX;
 };
 
 struct Triangle {
@@ -33,6 +35,8 @@ uniform Camera camera;
 uniform int width;
 uniform int height;
 writeonly uniform image2D outputTexture;
+uniform int triangleCount;
+uniform Light light;
 
 // --- functions ---
 
@@ -47,7 +51,7 @@ Ray initRay(uint x, uint y)
 
 	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 
-	return Ray(camera.pos.xyz, direction);
+	return Ray(camera.position.xyz, direction);
 }
 
 // return FAR_CLIP on miss and 
@@ -101,30 +105,29 @@ float hitTriangle(Ray ray, Triangle tri)
 vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	float distance = distance(hitPoint, light.position);
 	if (distance >= light.intensity) {
-		vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
-		return color;
+		return vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	float brightness = ((light.intensity - distance) / light.intensity);
-	vec4 originalColor = colors[colorID];
-	vec4 color(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness, originalColor.w));
-	return color;
+	vec4 originalColor = triangles[colorID].color;
+	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
 }
 
-layout(local_size_variable) in; // work group size = 16
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
-	vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
-	for (int i = 0; i < triangles.length(), i++) {
+	float rayScalar;
+	for (int i = 0; i < triangleCount; i++) {
 
 		//check if ray hits triangle
-		float rayScalar = hitTriangle(ray, triangles[i]);
+		rayScalar = hitTriangle(ray, triangles[i]);
 
 		//save scalar to nearest triangle
 		if (rayScalar < nearestTriangle) {
@@ -137,15 +140,15 @@ void main()
 	if (nearestTriangle < FAR_CLIP) {
 
 		//calculate hit point
-		hitPoint = ray.origin + (rayScalar * ray.direction);
+		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
 		//create ray to light
-		Ray toLight(hitPoint, (light.position - hitPoint));
+		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j < triangles.length(), j++) {
-			float lightScalar = hitTriangle(toLight, light.position);
+		for (int j = 0; j < triangleCount; j++) {
+			float lightScalar = hitTriangle(toLight, triangles[j]);
 
 			//if shadow was found then set bool and stop searching for more shadows
 			if (lightScalar < FAR_CLIP) {

@@ -10,6 +10,8 @@ public:
 	glm::mat4 getProj();
 	void setFov(float inputFov);
 	void setPosition(glm::vec3 inputPosition);
+	glm::vec3 getPosition();
+	glm::vec3 getViewDirection();
 private:
 	glm::vec3 m_Position;
 	glm::vec3 m_ViewDirection;

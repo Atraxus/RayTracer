@@ -31,3 +31,13 @@ void Camera::setFov(float degrees) {
 void Camera::setPosition(glm::vec3 inputPosition){
 	m_Position = inputPosition;
 }
+
+glm::vec3 Camera::getPosition()
+{
+	return m_Position;
+}
+
+glm::vec3 Camera::getViewDirection()
+{
+	return m_ViewDirection;
+}
