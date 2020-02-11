@@ -76,8 +76,8 @@ Ray initRay(uint x, uint y)
 	float halfWidth = float(width) / 2.0f;
 	float halfHeight = float(height) / 2.0f;
 
-	float a = 2*((float(x) - halfWidth + 0.5f) / halfWidth);
-	float b = 2*((halfHeight - float(y) - 0.5f) / halfHeight);
+	float a = camera.tanFovX*((float(x) - halfWidth + 0.5f) / halfWidth);
+	float b = camera.tanFovY*((halfHeight - float(y) - 0.5f) / halfHeight);
 	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
 	if (camera.position.x > 0)
 		imageStore(outputTexture, ivec2(100, 100), vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -174,7 +174,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 1; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {

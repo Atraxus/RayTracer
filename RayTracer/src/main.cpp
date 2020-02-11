@@ -194,7 +194,7 @@ int main(void)
 		cs.SetUniform3f("camera.yAxis", camera.getUp().x, camera.getUp().y, camera.getUp().z);
 
 		cs.SetUniform1f("camera.tanFovY", camera.getFovY());
-		cs.SetUniform1f("camera.tanFovX", camera.getFovY());
+		cs.SetUniform1f("camera.tanFovX", camera.getFovX());
 		//TODO: dynamic triangle count
 		cs.SetUniform1i("triangleCount", numTriangles);
 
