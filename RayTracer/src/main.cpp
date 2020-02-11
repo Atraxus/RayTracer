@@ -65,17 +65,6 @@ int main(void)
     // print version to console
     std::cout << glGetString(GL_VERSION) << std::endl;
     { // scope because of stack allocated vb and ib lead to infinite loop with glGetError
-        /*float positions[] =
-        {
-           -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.583f,  0.771f,  0.014f, 1.0f,
-            2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.327f,  0.483f,  0.844f, 1.0f,
-           -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.327f,  0.0f,    0.844f, 1.0f,
-            2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.822f,  0.569f,  0.201f, 1.0f,
-           -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.0f,    0.602f,  0.223f, 1.0f,
-            2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.310f,  0.747f,  0.0f,   1.0f,
-           -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.0,     0.616f,  0.489f, 1.0f,
-            2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.559f,  0.436f,  0.730f, 1.0f
-        };*/
 
         float positions[] =
         {
@@ -151,8 +140,6 @@ int main(void)
 			}
 		}
 
-		//float newColor = light.getBrightness(glm::vec3(-2.5f, -2.5f, 2.5f), 0.583);
-
         VertexArray va;
         VertexBuffer vb(positions, 28 * 9 * sizeof(float)); // create vertex buffer with given vertices (positions) and the size of the given data
 
@@ -187,28 +174,22 @@ int main(void)
         Renderer renderer;
         // Enable depth test
         glEnable(GL_DEPTH_TEST);
-        // Accept fragment if it closer to the camera than the former one
+        // Accept fragment if its closer to the camera than the former one
         glDepthFunc(GL_LESS);
 
-        // --- ImGui stuff
+    // --- ImGui stuff
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 130");
         ImGui::StyleColorsDark();
-        // ---
+    // ---
 
 
 
 
         
         
-        // --- Compute shader stuff
-
-        // Form positions to three vertices per triangle and 
-        // create bufferobject with all the triangles as structs
-        // VertexBufferLayout getElements() to check Layout for reading the positions into triangles
-        // and use indices
-
+    // --- Compute shader stuff
         std::vector<Triangle> triangles;
         Triangle triangle;
         for (int i = 0; i < 42; i+=3) {
@@ -249,7 +230,7 @@ int main(void)
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO);
         glBufferData(GL_SHADER_STORAGE_BUFFER, numTriangles * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
         Triangle* tri = (Triangle*) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, numTriangles * sizeof(glm::vec4), bufMask);
-        for (int i = 0; i < numTriangles; i++) {
+        for (unsigned int i = 0; i < numTriangles; i++) {
             tri[i] = triangles[i];
         }
         glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -261,17 +242,13 @@ int main(void)
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
         glDispatchCompute(1920 / 16, 1080 / 16, 1);
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
-        // ---
+    // ---
 
 
         glm::vec3 translationA(0, 0, 0);
-        /*glm::vec3 translationB(0, 0, 0);*/
         float rotationXA = 0.0f;
         float rotationYA = 0.0f;
         float rotationZA = 0.0f;
-        //float rotationXB = 0.0f;
-        //float rotationYB = 0.0f;
-        //float rotationZB = 0.0f;
         float cameraX = 0.0f;
         float cameraY = 1.0f;
         float cameraZ = 10.0f;
@@ -315,24 +292,6 @@ int main(void)
                 renderer.Draw(va, ib, shader);
             }
 
-            //// Cube B
-            //{
-            //    // Model
-            //    glm::mat4 modelScaleMat = glm::scale(glm::vec3(1.0f, 1.0f, 1.0f));
-            //    glm::mat4 modelRotateMatX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationXB), glm::vec3(1, 0, 0));
-            //    glm::mat4 modelRotateMatY = glm::rotate(modelRotateMatX, glm::radians(rotationYB), glm::vec3(0, 1, 0));
-            //    glm::mat4 modelRotateMat = glm::rotate(modelRotateMatY, glm::radians(rotationZB), glm::vec3(0, 0, 1));
-            //    glm::mat4 modelTranslateMat = glm::translate(glm::mat4(1.0f), translationB);
-            //    Model = modelTranslateMat * modelRotateMat * modelScaleMat;
-
-
-            //    glm::mat4 mvp = Proj * View * Model; // inverted 
-
-            //    shader.SetUniform4Matf("u_MVP", mvp);
-            //    renderer.Draw(va, ib, shader);
-            //}
-
-
 
             // --- ImGui stuff
             ImGui::SliderFloat("cameraX", &cameraX, -50.0f, 50.0f);
@@ -359,25 +318,6 @@ int main(void)
 
             ImGui::SliderFloat("AZ", &translationA.z, -50.0f, 50.0f);
             if (ImGui::Button("AZ = 0")) translationA.z = 0.0f;
-
-            //// Cube B
-            //ImGui::SliderFloat("rotationXB", &rotationXB, -50.0f, 50.0f);
-            //if (ImGui::Button("rotationXB = 0")) rotationXB = 0.0f;
-
-            //ImGui::SliderFloat("RotationYB", &rotationYB, -50.0f, 50.0f);
-            //if (ImGui::Button("RotationYB = 0")) rotationYB = 0.0f;
-
-            //ImGui::SliderFloat("RotationZB", &rotationZB, -50.0f, 50.0f);
-            //if (ImGui::Button("RotationZB = 0")) rotationZB = 0.0f;
-
-            //ImGui::SliderFloat("BX", &translationB.x, -50.0f, 50.0f);
-            //if (ImGui::Button("BX = 0")) translationB.x = 0.0f;
-
-            //ImGui::SliderFloat("BY", &translationB.y, -50.0f, 50.0f);
-            //if (ImGui::Button("BY = 0")) translationB.y = 0.0f;
-
-            //ImGui::SliderFloat("BZ", &translationB.z, -50.0f, 50.0f);
-            //if (ImGui::Button("BZ = 0")) translationB.z = 0.0f;
 
 			
             ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
