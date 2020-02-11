@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera(int width, int height, float fovY, glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up) 
-	: m_Width(width), m_Height(height), m_Position(pos), m_Fov(glm::radians(45.0f)), m_LookAt(lookAt)
+	: m_Width(width), m_Height(height), m_Position(pos), m_Fov(glm::radians(45.0f)), m_LookAt(lookAt), m_HeadUp(up)
 {
 	m_ViewDirection = glm::normalize(lookAt - pos);
 	m_Right = glm::normalize(glm::cross(up, m_ViewDirection));
@@ -17,22 +17,19 @@ void Camera::setFov(float degrees) {
 
 void Camera::setPosition(glm::vec3 inputPosition){
 	m_Position = inputPosition;
-	m_ViewDirection = glm::normalize(m_LookAt - inputPosition);
-	m_Right = glm::normalize(glm::cross(glm::vec3(0.0f,1.0f,0.0f), m_ViewDirection));
-	m_Up = glm::cross(m_Right, m_ViewDirection);
 }
 
 void Camera::setLookAt(glm::vec3 lookAt) {
 	m_LookAt = lookAt;
 	m_ViewDirection = glm::normalize(lookAt - m_Position);
-	m_Right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), m_ViewDirection));
+	m_Right = glm::normalize(glm::cross(m_HeadUp, m_ViewDirection));
 	m_Up = glm::cross(m_Right, m_ViewDirection);
 }
 
 void Camera::setViewDirection(glm::vec3 viewDir)
 {
 	m_ViewDirection = viewDir;
-	m_Right = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), m_ViewDirection));
+	m_Right = glm::normalize(glm::cross(m_HeadUp, m_ViewDirection));
 	m_Up = glm::cross(m_Right, m_ViewDirection);
 }
 

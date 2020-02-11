@@ -34,5 +34,6 @@ private:
 	glm::vec3 m_ViewDirection;
 	glm::vec3 m_Up;
 	glm::vec3 m_Right;
+	glm::vec3 m_HeadUp;
 
 };
