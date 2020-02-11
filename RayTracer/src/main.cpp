@@ -291,7 +291,7 @@ int main(void)
 
         Texture screenquad(1920, 1080);
         screenquad.Bind();
-        shader.SetUniform1i("u_Texture", screenquad.GetBindPoint());
+        shader.SetUniform1i("outputTexture", screenquad.GetBindPoint());
 
     // ---
 
