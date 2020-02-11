@@ -133,7 +133,7 @@ int main(void)
             25, 26, 27
         };
 
-		light light(glm::vec3(0.0f, 5.0f, 10.0f), 1000.0f);
+		light light(glm::vec3(0.0f, 5.0f, 10.0f), 30.0f);
 		for (int i = 0; i < 24; i++) {
 			for (int j = 5; j < 8; j++) {
 				positions[i * 9 + j] = light.getBrightness(glm::vec3(positions[i * 9], positions[i * 9 + 1], positions[i * 9 + 2]), positions[i * 9 + j]);
@@ -200,6 +200,10 @@ int main(void)
 
 		cs.SetUniform3f("light.position", light.getX(), light.getY(), light.getZ());
 		cs.SetUniform1f("light.intensity", light.getIntensity());
+
+		cs.SetUniform1i("width", 1920);
+		cs.SetUniform1i("height", 1080);
+		cs.SetUniform1ui("reflectionDepth", 1);
 
         Texture textureToRender(1920, 1080);
         //Texture textureToRender("res/textures/feelsgoodman.jpg");

@@ -95,6 +95,8 @@ float hitTriangle(Ray ray, Triangle tri)
 		//calculate scalar for ray
 		//ray.direction = normalize(ray.direction);
 		float denom = dot(normal, ray.direction);
+		if (isnan(ray.direction.x))
+			imageStore(outputTexture, ivec2(400, 1000), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
 
 		vec3 P0 = tri.pointA - ray.origin;
@@ -103,8 +105,6 @@ float hitTriangle(Ray ray, Triangle tri)
 		float t =temp / denom;
 		if (isnan(temp))
 			imageStore(outputTexture, ivec2(300, 1000), vec4(0.0f, 0.0f, 1.0f, 1.0f));
-		if (isnan(denom))
-			imageStore(outputTexture, ivec2(400, 1000), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		if (t < 0.0f) { return 5.0f; } // t goes to opposite direction
 		if(isnan(t))
 			imageStore(outputTexture, ivec2(500, 1000), vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -162,7 +162,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 12; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -184,7 +184,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
-		color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 		//calculate hit point
 		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
@@ -195,13 +195,13 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j <1; j++) {
+		for (int j = 0; j <12; j++) {
 			float lightScalar = hitTriangle(toLight, triangles[j]);
 
 			//if shadow was found then set bool and stop searching for more shadows
 			if (lightScalar < FAR_CLIP) {
 
-				color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+				//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 				shadow = true;
 				break;
 			}
@@ -231,7 +231,7 @@ void main()
 	
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
-	for (int i = 0; i < 8; i++) {
+	/*for (int i = 0; i < 8; i++) {
 		if (triangles[i].pointB.x == triangles[i].pointC.x) {
 			if (triangles[i].pointB.y == triangles[i].pointC.y) {
 				if (triangles[i].pointB.z == triangles[i].pointC.z) {
@@ -239,9 +239,12 @@ void main()
 				}
 			}
 		}
-	}
+	}*/
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
+
+	if (isnan(ray.direction.x))
+		imageStore(outputTexture, ivec2(200, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 1);
 	imageStore(outputTexture, ivec2(x, y), color);
