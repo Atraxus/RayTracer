@@ -292,7 +292,8 @@ int main(void)
 
 
 
-        Texture textureToRender(1920, 1080);
+        //Texture textureToRender(1920, 1080);
+        Texture textureToRender("res/textures/feelsgoodman.jpg");
         textureToRender.Bind();
 
         ScreenQuad screenQuad(shader);
