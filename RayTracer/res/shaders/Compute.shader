@@ -26,7 +26,7 @@ struct Light {
 	float intensity;
 };
 
-layout(std430) buffer TriangleBuffer {
+layout (std430, binding=1) buffer  TriangleBuffer {
 	Triangle triangles[];
 };
 
