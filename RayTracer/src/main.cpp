@@ -254,17 +254,15 @@ int main(void)
             triangles.push_back(triangle);
         }
 
+        Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
+
         GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
 
         unsigned int trianglesSSBO;
         unsigned int numTriangles = triangles.size();
         glGenBuffers(1, &trianglesSSBO);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, numTriangles * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-        Triangle* tri = (Triangle*) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, numTriangles * sizeof(glm::vec4), bufMask);
-        for (unsigned int i = 0; i < numTriangles; i++) {
-            tri[i] = triangles[i];
-        }
+        glBufferData(GL_SHADER_STORAGE_BUFFER, numTriangles * sizeof(Triangle), trisPtr, GL_STATIC_DRAW);
         glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
         ComputeShader cs("res/shaders/Compute.shader");
@@ -298,7 +296,6 @@ int main(void)
 
         ScreenQuad screenQuad(shader);
         screenQuad.draw(textureToRender);
-
     // ---
 
         glm::vec3 translationA(0, 0, 0);
