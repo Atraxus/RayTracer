@@ -34,11 +34,11 @@ layout(std430) buffer TriangleBuffer {
 uniform Camera camera;
 uniform int width;
 uniform int height;
-writeonly uniform image2D outputTexture;
 uniform int triangleCount;
 uniform Light light;
 uniform uint reflectionDepth;
 
+writeonly uniform image2D outputTexture;
 // --- functions ---
 
 // Initialize the primary ray for pixel x, y
