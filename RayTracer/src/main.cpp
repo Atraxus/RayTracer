@@ -254,11 +254,10 @@ int main(void)
             triangles.push_back(triangle);
         }
 
-        Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
-
 
         unsigned int numTriangles = triangles.size();
-		ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
+        Triangle* trisPtr = &triangles[0]; // vectors store their elements contiguously
+        ShaderStorageBuffer triangleSSBO(numTriangles * sizeof(Triangle), trisPtr);
         triangleSSBO.Bind(1);
 
         ComputeShader cs("res/shaders/Compute.shader");
@@ -293,7 +292,6 @@ int main(void)
         glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
         ScreenQuad screenQuad(shader);
-        //screenQuad.draw(textureToRender);
     // ---
 
         glm::vec3 translationA(0, 0, 0);
