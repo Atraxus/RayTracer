@@ -48,7 +48,7 @@ vec3 getNormal(Triangle tri) {
 	vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
 	
 	//calculate normal
-	vec3 normal = cross(AC, AB); // need to normalize?
+	vec3 normal = cross(AB, AC); // need to normalize?
 	if (normal.x <= 0.01 && normal.x >= -0.01) {
 		if (normal.y <= 0.01 && normal.y >= -0.01) {
 			if (normal.z <= 0.01 && normal.z >= -0.01) {
@@ -77,76 +77,93 @@ Ray initRay(uint x, uint y)
 	float halfWidth = float(width) / 2.0f;
 	float halfHeight = float(height) / 2.0f;
 
-	float a = camera.tanFovX*((float(x) - halfWidth + 0.5f) / halfWidth);
-	float b = camera.tanFovY*((halfHeight - float(y) - 0.5f) / halfHeight);
-	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
-	if (camera.position.x > 0)
-		imageStore(outputTexture, ivec2(100, 100), vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	return Ray(camera.position.xyz, direction);
+	float a = 10.0f*((float(x) - halfWidth + 0.5f) / halfWidth);
+	float b = 10.0f*((halfHeight - float(y) - 0.5f) / halfHeight);
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + vec3(0.0f, 0.0f, -1.0f)).xyz);
+	return Ray(vec3(0.0f, 0.0f, 0.0f), direction);
 }
 
-// return FAR_CLIP on miss and 
-float hitTriangle(Ray ray, Triangle tri)
+ //return FAR_CLIP on miss and 
+//float hitTriangle(Ray ray, Triangle tri)
+//{
+//	
+//    vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
+//    vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
+//	
+//	//calculate normal
+//	vec3 normal = getNormal(tri);
+//
+//	float denom = dot(normal, ray.direction);
+//	if (denom > 0.000001) 
+//	{
+//		//calculate scalar for ray
+//		//ray.direction = normalize(ray.direction);
+//		if (isnan(ray.direction.x))
+//			imageStore(outputTexture, ivec2(400, 1000), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+//		//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
+//
+//		vec3 P0L0 = tri.pointA - ray.origin;
+//		float temp = dot(P0L0, normal);
+//
+//		float t =temp / denom;
+//		if (isnan(temp))
+//			imageStore(outputTexture, ivec2(300, 1000), vec4(0.0f, 0.0f, 1.0f, 1.0f));
+//		if (t < 0.0f) { return FAR_CLIP; } // t goes to opposite direction
+//		if(isnan(t))
+//			imageStore(outputTexture, ivec2(100, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+//
+//
+//		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
+//
+//		// Compute vectors
+//		vec3 AP = P - tri.pointA.xyz;
+//
+//		// Compute dot products
+//		float dot00 = dot(AC, AC);
+//		float dot01 = dot(AC, AB);
+//		float dot02 = dot(AC, AP);
+//		float dot11 = dot(AB, AB);
+//		float dot12 = dot(AB, AP);
+//
+//		// Compute barycentric coordinates
+//		float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+//		float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+//		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+//
+//		// Check if point is in triangle
+//		if ((u >= 0) && (v >= 0) && (u + v < 1)) {
+//			return t;
+//		}
+//    }
+//	return FAR_CLIP;
+//}
+float hitTriangle(Ray r, Triangle t)
 {
-	
-    vec3 AB = tri.pointB.xyz - tri.pointA.xyz;
-    vec3 AC = tri.pointC.xyz - tri.pointA.xyz;
-	
-	//calculate normal
-	vec3 normal = getNormal(tri);
-	if (normal.x <= 0.01 && normal.x >= -0.01) {
-		if (normal.y <= 0.01 && normal.y >= -0.01) {
-			if (normal.z <= 0.01 && normal.z >= -0.01) {
-				imageStore(outputTexture, ivec2(500, 750), vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	vec3 AB = t.pointB.xyz - t.pointA.xyz;
+	vec3 AC = t.pointC.xyz - t.pointA.xyz;
+	mat3 mat = mat3(AB, AC, -1.0f * r.direction);
+
+	float det = determinant(mat);
+
+	if (det == 0.0f) {
+		return FAR_CLIP;
+	}
+	else {
+		vec3 oA = r.origin - t.pointA.xyz;
+
+		mat3 Di = inverse(mat);
+		vec3 solution = Di * oA;
+
+		if (solution.x >= -0.0001 && solution.x <= 1.0001) {
+			if (solution.y >= -0.0001 && solution.y <= 1.0001) {
+				if (solution.x + solution.y <= 1.0001) {
+					return solution.z;
+				}
 			}
 		}
+		return FAR_CLIP;
 	}
-
-	float denom = dot(normal, ray.direction);
-	if (denom > 0.000001) 
-	{
-		//calculate scalar for ray
-		//ray.direction = normalize(ray.direction);
-		if (isnan(ray.direction.x))
-			imageStore(outputTexture, ivec2(400, 1000), vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		//if (denom <= 0.000001) { return FAR_CLIP; } // ray and normal orthogonal?
-
-		vec3 P0L0 = tri.pointA - ray.origin;
-		float temp = dot(P0L0, normal);
-
-		float t =temp / denom;
-		if (isnan(temp))
-			imageStore(outputTexture, ivec2(300, 1000), vec4(0.0f, 0.0f, 1.0f, 1.0f));
-		if (t < 0.0f) { return FAR_CLIP; } // t goes to opposite direction
-		if(isnan(t))
-			imageStore(outputTexture, ivec2(100, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
-
-
-		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
-
-		// Compute vectors
-		vec3 AP = P - tri.pointA.xyz;
-
-		// Compute dot products
-		float dot00 = dot(AC, AC);
-		float dot01 = dot(AC, AB);
-		float dot02 = dot(AC, AP);
-		float dot11 = dot(AB, AB);
-		float dot12 = dot(AB, AP);
-
-		// Compute barycentric coordinates
-		float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-		float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-		// Check if point is in triangle
-		if ((u >= 0) && (v >= 0) && (u + v < 1)) {
-			return t;
-		}
-    }
-	return FAR_CLIP;
 }
-
 Ray calculateReflectionRay(Ray ray, int nearestObjectID, vec3 hitPoint) {
 	Triangle tri = triangles[nearestObjectID];
 	//reflection calculation: https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
@@ -172,7 +189,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 3; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -195,7 +212,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
 		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		color = triangles[0].color;
+		color = triangles[4].color;
 		////calculate hit point
 		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
@@ -247,17 +264,35 @@ void main()
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
-	
-	
+	triangles[0].pointA.x = -12.5f;
+	triangles[0].pointA.y = -12.5f;
+	triangles[0].pointA.z = -7.5f;
+	triangles[0].pointB.x = -7.5f;
+	triangles[0].pointB.y = -12.5f;
+	triangles[0].pointB.z = -7.5f;
+	triangles[0].pointC.x = -12.5f;
+	triangles[0].pointC.y = -7.5f;
+	triangles[0].pointC.z = -7.5f;
+	triangles[0].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
+	triangles[1].pointA.x = -7.5f;
+	triangles[1].pointA.y = -12.5f;
+	triangles[1].pointA.z = -7.5f;
+	triangles[1].pointB.x = -7.5f;
+	triangles[1].pointB.y = -7.5f;
+	triangles[1].pointB.z = -7.5f;
+	triangles[1].pointC.x = -12.5f;
+	triangles[1].pointC.y = -7.5f;
+	triangles[1].pointC.z = -7.5f;
+	triangles[1].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
 
 
 	if (triangles[8].pointA.x > 0.0956f) {
 		imageStore(outputTexture, ivec2(50, 50), vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	}
-
-
+	
 	//substitute with ReflectionDepth
 	color = traceRay(ray, color, 0);
 	imageStore(outputTexture, ivec2(x, y), color);
+
 
 }

@@ -44,7 +44,7 @@ public:
 		m_Triangles = triangle;
 
 
-		m_Camera.position = glm::vec3(0.0f, 0.0f, 10.0f);
+		m_Camera.position = glm::vec3(0.0f, 0.0f, 4.0f);
 		m_Camera.direction = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_Camera.xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 		m_Camera.yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -175,8 +175,8 @@ public:
 	void run(void)
 	{
 		// TODO: iterating x and y needed
-		unsigned int x = 1060;
-		unsigned int y = 540;
+		unsigned int x = 0;
+		unsigned int y = 450;
 		glm::vec4 color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		Ray ray = initRay(x, y);
 

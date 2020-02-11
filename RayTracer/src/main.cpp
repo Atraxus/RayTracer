@@ -72,35 +72,35 @@ int main(void)
         {
             // Cube A
                 //front
-                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
-                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
-                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
-                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                -2.5f, -2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                 2.5f, -2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                -2.5f,  2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
+                 2.5f,  2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.1f, 0.1f, 1.0f,
                 //bottom
-                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
-                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
-                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
-                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                -2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                 2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                -2.5f, -2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
+                 2.5f, -2.5f,  -7.5f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f,
                 //left
-                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
-                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
-                -2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
-                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f, -2.5f, -7.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -7.5f, 0.0f, 0.0f, 0.1f, 0.8f, 0.1f, 1.0f,
                 //right
-                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
-                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
-                 2.5f, -2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
-                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f, -2.5f, -7.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
+                 2.5f,  2.5f, -7.5f, 0.0f, 0.0f, 0.1f, 0.1f, 0.8f, 1.0f,
                 //top
-                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
-                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
-                -2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
-                 2.5f,  2.5f,  2.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                 2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                -2.5f,  2.5f, -7.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
+                 2.5f,  2.5f, -7.5f, 0.0f, 0.0f, 0.6f, 0.6f, 0.1f, 1.0f,
                 //back
-                -2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
-                 2.5f, -2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
-                -2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
-                 2.5f,  2.5f, -2.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                -2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                 2.5f, -2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                -2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
+                 2.5f,  2.5f, -12.5f, 0.0f, 0.0f, 0.1f, 0.6f, 0.6f, 1.0f,
 
                  //bottom
                 -100.0f, -3.0f, -100.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f, 1.0f,
@@ -137,8 +137,8 @@ int main(void)
 
 		light light(glm::vec3(0.0f, 5.0f, 10.0f), 100.0f);
 
-        Camera camera(1920, 1080, 90.0f, glm::vec3(0.0f, 32.0f, 15.0f), 
-            glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        Camera camera(1920, 1080, 90.0f, glm::vec3(0.0f, 0.0f, 0.0f), 
+            glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 Model = glm::mat4(1.0f);
         
     // --- Compute shader stuff
@@ -223,7 +223,7 @@ int main(void)
 
         // ------- TESTING -------
 
-        ComputeSimulator compSim(trisPtr, tan(glm::radians(45.0f)), tan(glm::radians(45.0f)), (int)numTriangles, 1920, 1080);
+        ComputeSimulator compSim(trisPtr, camera.getFovX(), camera.getFovY(), (int)numTriangles, 1920, 1080);
         compSim.run();
 
 
@@ -254,13 +254,13 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::SliderFloat("View direction (X)", &newViewDir.x, -50.0f, 50.0f);
+            ImGui::SliderFloat("View direction (X)", &newViewDir.x, -1.0f, 1.0f);
             if (ImGui::Button("View direction (X) = 0")) newViewDir.x = 0.0f;
 
-            ImGui::SliderFloat("View direction (y)", &newViewDir.y, -50.0f, 50.0f);
+            ImGui::SliderFloat("View direction (y)", &newViewDir.y, -1.0f, 1.0f);
             if (ImGui::Button("View direction (y) = 0")) newViewDir.y = 0.0f;
 
-            ImGui::SliderFloat("View direction (z)", &newViewDir.z, -50.0f, 50.0f);
+            ImGui::SliderFloat("View direction (z)", &newViewDir.z, -1.0f, 1.0f);
             if (ImGui::Button("View direction (z) = 0")) newViewDir.z = 0.0f;
 
             ImGui::SliderFloat("New Pos (X)", &newPos.x, -50.0f, 50.0f);
