@@ -30,11 +30,11 @@ layout(std430, binding = 1) buffer  APointBuffer {
 };
 
 layout(std430, binding = 2) buffer  BPointBuffer {
-	vec3 aPoints[];
+	vec3 bPoints[];
 };
 
 layout(std430, binding = 3) buffer  CPointBuffer {
-	vec3 aPoints[];
+	vec3 cPoints[];
 };
 
 layout(std430, binding = 4) buffer  ColorBuffer {
