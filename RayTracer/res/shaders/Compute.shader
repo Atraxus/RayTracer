@@ -71,18 +71,7 @@ vec3 getNormal(Triangle tri) {
 	return normal;
 }
 
-//Ray initRay(uint x, uint y)
-//{
-//	float halfWidth = float(width) / 2.0f;
-//	float halfHeight = float(height) / 2.0f;
-//
-//	float a = camera.tanFovX * ((float(x) - halfWidth + 0.5f) / halfWidth);
-//	float b = camera.tanFovY * ((halfHeight - float(y) - 0.5f) / halfHeight);
-//
-//	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
-//
-//	return Ray(camera.position.xyz, direction);
-//}
+
 Ray initRay(uint x, uint y)
 {
 	float halfWidth = float(width) / 2.0f;
@@ -147,33 +136,7 @@ float hitTriangle(Ray ray, Triangle tri)
     }
 	return FAR_CLIP;
 }
-//float hitTriangle(Ray r, Triangle t)
-//{
-//	vec3 AB = t.pointB.xyz - t.pointA.xyz;
-//	vec3 AC = t.pointC.xyz - t.pointA.xyz;
-//	mat3 mat = mat3(AB, AC, -1.0f * r.direction);
-//
-//	float det = determinant(mat);
-//
-//	if (det == 0.0f) {
-//		return FAR_CLIP;
-//	}
-//	else {
-//		vec3 oA = r.origin - t.pointA.xyz;
-//
-//		mat3 Di = inverse(mat);
-//		vec3 solution = Di * oA;
-//
-//		if (solution.x >= -0.0001 && solution.x <= 1.0001) {
-//			if (solution.y >= -0.0001 && solution.y <= 1.0001) {
-//				if (solution.x + solution.y <= 1.0001) {
-//					return solution.z;
-//				}
-//			}
-//		}
-//		return FAR_CLIP;
-//	}
-//}
+
 Ray calculateReflectionRay(Ray ray, int nearestObjectID, vec3 hitPoint) {
 	//reflection calculation: https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
 	vec3 normal = getNormal(Triangle(aPoints[nearestObjectID], bPoints[nearestObjectID], cPoints[nearestObjectID]));
@@ -198,7 +161,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 4S; i++) {
+	for (int i = 0; i < 8; i++) {
 
 		//check if ray hits triangle
 		/*if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -231,7 +194,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j <2; j++) {
+		for (int j = 0; j <0; j++) {
 			float lightScalar = hitTriangle(toLight, Triangle(aPoints[j], bPoints[j], cPoints[j]));
 
 			//if shadow was found then set bool and stop searching for more shadows
@@ -244,7 +207,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 		//if light hits point then calculate color
 		if (!shadow) {
 			color = calculateColor(hitPoint, nearestObjectID, light);
-			color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		//calculate reflection ray
@@ -272,35 +235,35 @@ void main()
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
-	//triangles[0].pointA.x = -2.5f;
-	//triangles[0].pointA.y = -2.5f;
-	//triangles[0].pointA.z = -7.5f;
-	//triangles[0].pointB.x =  2.5f;
-	//triangles[0].pointB.y = -2.5f;
-	//triangles[0].pointB.z = -7.5f;
-	//triangles[0].pointC.x = -2.5f;
-	//triangles[0].pointC.y =  2.5f;
-	//triangles[0].pointC.z = -7.5f;
-	////triangles[0].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
-	//triangles[1].pointA.x =  2.5f;
-	//triangles[1].pointA.y = -2.5f;
-	//triangles[1].pointA.z = -7.5f;
-	//triangles[1].pointB.x =  2.5f;
-	//triangles[1].pointB.y =  2.5f;
-	//triangles[1].pointB.z = -7.5f;
-	//triangles[1].pointC.x = -2.5f;
-	//triangles[1].pointC.y =  2.5f;
-	//triangles[1].pointC.z = -7.5f;
-	////triangles[1].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
-	//triangles[2].pointA.x =  2.5f;
-	//triangles[2].pointA.y =  2.5f;
-	//triangles[2].pointA.z = -7.5f;
-	//triangles[2].pointB.x = -2.5f;
-	//triangles[2].pointB.y = -2.5f;
-	//triangles[2].pointB.z = -12.5f;
-	//triangles[2].pointC.x =  2.5f;
-	//triangles[2].pointC.y = -2.5f;
-	//triangles[2].pointC.z = -12.5f;
+	aPoints[0].x = -2.5f;
+	aPoints[0].y = -2.5f;
+	aPoints[0].z = -7.5f;
+	bPoints[0].x =  2.5f;
+	bPoints[0].y = -2.5f;
+	bPoints[0].z = -7.5f;
+	cPoints[0].x = -2.5f;
+	cPoints[0].y =  2.5f;
+	cPoints[0].z = -7.5f;
+	//triangles[0].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
+	aPoints[1].x =  2.5f;
+	aPoints[1].y = -2.5f;
+	aPoints[1].z = -7.5f;
+	bPoints[1].x =  2.5f;
+	bPoints[1].y =  2.5f;
+	bPoints[1].z = -7.5f;
+	cPoints[1].x = -2.5f;
+	cPoints[1].y =  2.5f;
+	cPoints[1].z = -7.5f;
+	//triangles[1].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
+	aPoints[2].x =  2.5f;
+	aPoints[2].y =  2.5f;
+	aPoints[2].z = -7.5f;
+	bPoints[2].x = -2.5f;
+	bPoints[2].y = -2.5f;
+	bPoints[2].z = -12.5f;
+	cPoints[2].x =  2.5f;
+	cPoints[2].y = -2.5f;
+	cPoints[2].z = -12.5f;
 
 
 	/*if (triangles[8].pointA.x > 0.0956f) {

@@ -134,7 +134,7 @@ int main(void)
             25, 27, 26
         };
 
-		light light(glm::vec3(0.0f, 5.0f, 10.0f), 100.0f);
+		light light(glm::vec3(0.0f, 5.0f, 10.0f), 30.0f);
 
         Camera camera(1920, 1080, 90.0f, glm::vec3(0.0f, 0.0f, 0.0f), 
             glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -190,8 +190,8 @@ int main(void)
 		cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 
 		//needs to be changed according to view direction
-		cs.SetUniform3f("camera.xAxis", camera.getRight().x, camera.getRight().y, camera.getRight().z);
-		cs.SetUniform3f("camera.yAxis", camera.getUp().x, camera.getUp().y, camera.getUp().z);
+		cs.SetUniform3f("camera.xAxis", -(camera.getRight().x), camera.getRight().y, camera.getRight().z);
+		cs.SetUniform3f("camera.yAxis", camera.getUp().x, -(camera.getUp().y), camera.getUp().z);
 
 		cs.SetUniform1f("camera.tanFovY", camera.getFovY());
 		cs.SetUniform1f("camera.tanFovX", camera.getFovX());
@@ -282,9 +282,12 @@ int main(void)
 
 
             
-            cs.Bind();
-            cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-            cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+			cs.Bind();
+			cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+			cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
+			//needs to be changed according to view direction
+			cs.SetUniform3f("camera.xAxis", -(camera.getRight().x), camera.getRight().y, camera.getRight().z);
+			cs.SetUniform3f("camera.yAxis", camera.getUp().x, camera.getUp().y, camera.getUp().z);
 
             textureToRender.Bind();
             aPointSSBO.Bind(1);
