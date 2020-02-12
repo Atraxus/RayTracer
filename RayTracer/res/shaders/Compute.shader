@@ -80,10 +80,10 @@ Ray initRay(uint x, uint y)
 	float halfWidth = float(width) / 2.0f;
 	float halfHeight = float(height) / 2.0f;
 
-	float a = 10.0f*((float(x) - halfWidth + 0.5f) / halfWidth);
-	float b = 10.0f*((halfHeight - float(y) - 0.5f) / halfHeight);
-	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + vec3(0.0f, 0.0f, -1.0f)).xyz);
-	return Ray(vec3(0.0f, 0.0f, 0.0f), direction);
+	float a = 2.0f*((float(x) - halfWidth + 0.5f) / halfWidth);
+	float b = 2.0f*((halfHeight - float(y) - 0.5f) / halfHeight);
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
+	return Ray(camera.position, direction);
 }
 
  //return FAR_CLIP on miss and 
@@ -192,7 +192,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 
 		//check if ray hits triangle
 		if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -267,27 +267,35 @@ void main()
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	Ray ray = initRay(x, y);
 
-	triangles[0].pointA.x = -12.5f;
-	triangles[0].pointA.y = -12.5f;
+	triangles[0].pointA.x = -2.5f;
+	triangles[0].pointA.y = -2.5f;
 	triangles[0].pointA.z = -7.5f;
-	triangles[0].pointB.x = -7.5f;
-	triangles[0].pointB.y = -12.5f;
+	triangles[0].pointB.x =  2.5f;
+	triangles[0].pointB.y = -2.5f;
 	triangles[0].pointB.z = -7.5f;
-	triangles[0].pointC.x = -12.5f;
-	triangles[0].pointC.y = -7.5f;
+	triangles[0].pointC.x = -2.5f;
+	triangles[0].pointC.y =  2.5f;
 	triangles[0].pointC.z = -7.5f;
-	triangles[0].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
-	triangles[1].pointA.x = -7.5f;
-	triangles[1].pointA.y = -12.5f;
+	//triangles[0].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
+	triangles[1].pointA.x =  2.5f;
+	triangles[1].pointA.y = -2.5f;
 	triangles[1].pointA.z = -7.5f;
-	triangles[1].pointB.x = -7.5f;
-	triangles[1].pointB.y = -7.5f;
+	triangles[1].pointB.x =  2.5f;
+	triangles[1].pointB.y =  2.5f;
 	triangles[1].pointB.z = -7.5f;
-	triangles[1].pointC.x = -12.5f;
-	triangles[1].pointC.y = -7.5f;
+	triangles[1].pointC.x = -2.5f;
+	triangles[1].pointC.y =  2.5f;
 	triangles[1].pointC.z = -7.5f;
-	triangles[1].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
-
+	//triangles[1].color = vec4(0.8f, 0.1f, 0.1f, 1.0f);
+	triangles[2].pointA.x =  2.5f;
+	triangles[2].pointA.y =  2.5f;
+	triangles[2].pointA.z = -7.5f;
+	triangles[2].pointB.x = -2.5f;
+	triangles[2].pointB.y = -2.5f;
+	triangles[2].pointB.z = -12.5f;
+	triangles[2].pointC.x =  2.5f;
+	triangles[2].pointC.y = -2.5f;
+	triangles[2].pointC.z = -12.5f;
 
 	if (triangles[8].pointA.x > 0.0956f) {
 		imageStore(outputTexture, ivec2(50, 50), vec4(1.0f, 0.0f, 0.0f, 1.0f));
