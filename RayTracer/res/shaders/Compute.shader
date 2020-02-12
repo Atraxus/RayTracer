@@ -25,11 +25,19 @@ struct Light {
 	float intensity;
 };
 
-layout(std430, binding = 1) buffer  TriangleBuffer {
-	Triangle triangles[];
+layout(std430, binding = 1) buffer  APointBuffer {
+	vec3 aPoints[];
 };
 
-layout(std430, binding = 2) buffer  ColorBuffer {
+layout(std430, binding = 2) buffer  BPointBuffer {
+	vec3 aPoints[];
+};
+
+layout(std430, binding = 3) buffer  CPointBuffer {
+	vec3 aPoints[];
+};
+
+layout(std430, binding = 4) buffer  ColorBuffer {
 	vec4 colors[];
 };
 

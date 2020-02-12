@@ -141,24 +141,29 @@ int main(void)
         glm::mat4 Model = glm::mat4(1.0f);
         
     // --- Compute shader stuff
-        Triangle triangles[14];
+        glm::vec3 triangleAs[14];
+        glm::vec3 triangleBs[14];
+        glm::vec3 triangleCs[14];
         glm::vec4 colors[14];
         for (int i = 0; i < 42; i+=3) {
             int ia = indices[i];
             int ib = indices[i + 1];
             int ic = indices[i + 2];
 
-            float ax = positions[ia * 9];
-            float ay = positions[ia * 9 + 1];
-            float az = positions[ia * 9 + 2];
+            float x = positions[ia * 9];
+            float y = positions[ia * 9 + 1];
+            float z = positions[ia * 9 + 2];
+            triangleAs[i] = glm::vec3(x, y, z);
 
-            float bx = positions[ib * 9];
-            float by = positions[ib * 9 + 1];
-            float bz = positions[ib * 9 + 2];
+            x = positions[ib * 9];
+            y = positions[ib * 9 + 1];
+            z = positions[ib * 9 + 2];
+            triangleAs[i] = glm::vec3(x, y, z);
 
-            float cx = positions[ic * 9];
-            float cy = positions[ic * 9 + 1];
-            float cz = positions[ic * 9 + 2];
+            x = positions[ic * 9];
+            y = positions[ic * 9 + 1];
+            z = positions[ic * 9 + 2];
+            triangleAs[i] = glm::vec3(x, y, z);
 
             float r = positions[ia * 9 + 5];
             float g = positions[ia * 9 + 6];
@@ -166,13 +171,16 @@ int main(void)
             float a = positions[ia * 9 + 8];
 
             colors[i/3] = glm::vec4(r, g, b, a);
-            triangles[i/3] = { glm::vec3(ax, ay, az), glm::vec3(bx, by, bz), glm::vec3(cx, cy, cz) };
         }
 
-        ShaderStorageBuffer triangleSSBO(14 * sizeof(Triangle), triangles);
-        triangleSSBO.Bind(1);
+        ShaderStorageBuffer aPointSSBO(14 * sizeof(glm::vec3), triangleAs);
+        ShaderStorageBuffer bPointSSBO(14 * sizeof(glm::vec3), triangleBs);
+        ShaderStorageBuffer cPointSSBO(14 * sizeof(glm::vec3), triangleCs);
+        aPointSSBO.Bind(1);
+        bPointSSBO.Bind(2);
+        cPointSSBO.Bind(3);
         ShaderStorageBuffer colorsSSBO(14 * sizeof(glm::vec4), colors);
-        colorsSSBO.Bind(2);
+        colorsSSBO.Bind(4);
 
         ComputeShader cs("res/shaders/Compute.shader");
         cs.Bind();
@@ -208,11 +216,10 @@ int main(void)
         shader.Unbind();
         textureToRender.Unbind();
         cs.Unbind();
-        /*aPointsSSBO.Unbind();
-        bPointsSSBO.Unbind();
-        cPointsSSBO.Unbind();*/
+        aPointSSBO.Unbind();
+        bPointSSBO.Unbind();
+        cPointSSBO.Unbind();
         colorsSSBO.Unbind();
-        triangleSSBO.Unbind();
 
 
 
@@ -280,10 +287,9 @@ int main(void)
             cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 
             textureToRender.Bind();
-            /*aPointsSSBO.Bind(1);
-            bPointsSSBO.Bind(2);
-            cPointsSSBO.Bind(3);*/
-            triangleSSBO.Bind(1);
+            aPointSSBO.Bind(1);
+            bPointSSBO.Bind(2);
+            cPointSSBO.Bind(3);
             colorsSSBO.Bind(2);
 
             glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
