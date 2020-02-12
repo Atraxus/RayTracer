@@ -25,19 +25,19 @@ struct Light {
 	float intensity;
 };
 
-layout(std140, binding = 1) buffer  APointBuffer {
+layout(std430, binding = 1) buffer  APointBuffer {
 	vec3 aPoints[];
 };
 
-layout(std140, binding = 2) buffer  BPointBuffer {
+layout(std430, binding = 2) buffer  BPointBuffer {
 	vec3 bPoints[];
 };
 
-layout(std140, binding = 3) buffer  CPointBuffer {
+layout(std430, binding = 3) buffer  CPointBuffer {
 	vec3 cPoints[];
 };
 
-layout(std140, binding = 4) buffer  ColorBuffer {
+layout(std430, binding = 4) buffer  ColorBuffer {
 	vec4 colors[];
 };
 

@@ -153,31 +153,31 @@ int main(void)
             float x = positions[ia * 9];
             float y = positions[ia * 9 + 1];
             float z = positions[ia * 9 + 2];
-            triangleAs[i/3] = glm::vec3(x, y, z);
+            triangleAs[i / 3] = glm::vec3(x, y, z);
 
             x = positions[ib * 9];
             y = positions[ib * 9 + 1];
             z = positions[ib * 9 + 2];
-            triangleAs[i/3] = glm::vec3(x, y, z);
+            triangleBs[i / 3] = glm::vec3(x, y, z);
 
             x = positions[ic * 9];
             y = positions[ic * 9 + 1];
             z = positions[ic * 9 + 2];
-            triangleAs[i/3] = glm::vec3(x, y, z);
+            triangleCs[i / 3] = glm::vec3(x, y, z);
 
             float r = positions[ia * 9 + 5];
             float g = positions[ia * 9 + 6];
             float b = positions[ia * 9 + 7];
             float a = positions[ia * 9 + 8];
 
-            colors[i/3] = glm::vec4(r, g, b, a);
+            colors[i / 3] = glm::vec4(r, g, b, a);
         }
 
         ShaderStorageBuffer aPointSSBO(14 * sizeof(glm::vec3), triangleAs);
-        ShaderStorageBuffer bPointSSBO(14 * sizeof(glm::vec3), triangleBs);
-        ShaderStorageBuffer cPointSSBO(14 * sizeof(glm::vec3), triangleCs);
         aPointSSBO.Bind(1);
+        ShaderStorageBuffer bPointSSBO(14 * sizeof(glm::vec3), triangleBs);
         bPointSSBO.Bind(2);
+        ShaderStorageBuffer cPointSSBO(14 * sizeof(glm::vec3), triangleCs);
         cPointSSBO.Bind(3);
         ShaderStorageBuffer colorsSSBO(14 * sizeof(glm::vec4), colors);
         colorsSSBO.Bind(4);
