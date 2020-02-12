@@ -198,7 +198,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
 	float rayScalar;
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 4S; i++) {
 
 		//check if ray hits triangle
 		/*if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -221,41 +221,40 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
 		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		color = colors[0];
-		////calculate hit point
-		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
+		//color = colors[0];
+		//calculate hit point
+		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
-		////create ray to light
-		//Ray toLight = Ray(hitPoint, (light.position - hitPoint));
+		//create ray to light
+		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
 
 
-		////brute force triangles to find shadows
-		//bool shadow = false;
-		//for (int j = 0; j <0; j++) {
-		//	float lightScalar = hitTriangle(toLight, triangles[j]);
+		//brute force triangles to find shadows
+		bool shadow = false;
+		for (int j = 0; j <2; j++) {
+			float lightScalar = hitTriangle(toLight, Triangle(aPoints[j], bPoints[j], cPoints[j]));
 
-		//	//if shadow was found then set bool and stop searching for more shadows
-		//	if (lightScalar < FAR_CLIP) {
+			//if shadow was found then set bool and stop searching for more shadows
+			if (lightScalar < FAR_CLIP) {
 
-		//		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		//		shadow = true;
-		//		break;
-		//	}
-		//}
-		////if light hits point then calculate color
-		//if (!shadow) {
-
-		//	color = calculateColor(hitPoint, nearestObjectID, light);
-		//}
-		//vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		////calculate reflection ray
-		///*
-		//if (reflectionDepth > 0) {
-		//	Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
-		//	tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
-		//}
-		//*/
-		// //+= 0.5f * tempColor;
+				shadow = true;
+				break;
+			}
+		}
+		//if light hits point then calculate color
+		if (!shadow) {
+			color = calculateColor(hitPoint, nearestObjectID, light);
+			color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		//calculate reflection ray
+		/*
+		if (reflectionDepth > 0) {
+			Ray reflectionRay = calculateReflectionRay(ray, nearestObjectID, hitPoint);
+			tempColor = traceRay(reflectionRay, color, reflectionDepth-1);
+		}
+		*/
+		 //+= 0.5f * tempColor;
 	}
 	return color;
 }

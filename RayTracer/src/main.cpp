@@ -290,7 +290,7 @@ int main(void)
             aPointSSBO.Bind(1);
             bPointSSBO.Bind(2);
             cPointSSBO.Bind(3);
-            colorsSSBO.Bind(2);
+            colorsSSBO.Bind(4);
 
             glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             glDispatchCompute(1920 / 8, 1080 / 8, 1);
