@@ -153,17 +153,17 @@ int main(void)
             float x = positions[ia * 9];
             float y = positions[ia * 9 + 1];
             float z = positions[ia * 9 + 2];
-            triangleAs[i] = glm::vec3(x, y, z);
+            triangleAs[i/3] = glm::vec3(x, y, z);
 
             x = positions[ib * 9];
             y = positions[ib * 9 + 1];
             z = positions[ib * 9 + 2];
-            triangleAs[i] = glm::vec3(x, y, z);
+            triangleAs[i/3] = glm::vec3(x, y, z);
 
             x = positions[ic * 9];
             y = positions[ic * 9 + 1];
             z = positions[ic * 9 + 2];
-            triangleAs[i] = glm::vec3(x, y, z);
+            triangleAs[i/3] = glm::vec3(x, y, z);
 
             float r = positions[ia * 9 + 5];
             float g = positions[ia * 9 + 6];
