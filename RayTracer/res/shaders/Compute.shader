@@ -1,6 +1,7 @@
 #version 430
 #define FAR_CLIP 1000.0f
 
+vec3 hp;
 
 struct Camera {
 	vec3 position;
@@ -63,7 +64,7 @@ vec3 getNormal(Triangle tri) {
 	if (normal.x <= 0.01 && normal.x >= -0.01) {
 		if (normal.y <= 0.01 && normal.y >= -0.01) {
 			if (normal.z <= 0.01 && normal.z >= -0.01) {
-				imageStore(outputTexture, ivec2(500, 500), vec4(1.0f, 0.0f, 0.0f, 1.0f));
+				imageStore(outputTexture, ivec2(500, 500), vec4(1.0f, 0.0f, 0.0f, -1.0f));
 			}
 		}
 	}
@@ -79,7 +80,7 @@ Ray initRay(uint x, uint y)
 
 	float a = 2.0f*((float(x) - halfWidth + 0.5f) / halfWidth);
 	float b = 2.0f*((halfHeight - float(y) - 0.5f) / halfHeight);
-	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + camera.direction).xyz);
+	vec3 direction = normalize((a * camera.xAxis + b * camera.yAxis + vec3(0.0f, 0.0f, 1.0f)).xyz);
 	return Ray(camera.position, direction);
 }
 
@@ -112,10 +113,10 @@ float hitTriangle(Ray ray, Triangle tri)
 			imageStore(outputTexture, ivec2(100, 200), vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 
-		vec3 P = ray.origin + (t * ray.direction); // Point where ray hits plane
+		hp = ray.origin + (t * ray.direction); // Point where ray hits plane
 
 		// Compute vectors
-		vec3 AP = P - tri.pointA.xyz;
+		vec3 AP = hp - tri.pointA.xyz;
 
 		// Compute dot products
 		float dot00 = dot(AC, AC);
@@ -134,6 +135,7 @@ float hitTriangle(Ray ray, Triangle tri)
 			return t;
 		}
     }
+	hp = vec3(FAR_CLIP, FAR_CLIP, FAR_CLIP);
 	return FAR_CLIP;
 }
 
@@ -152,7 +154,7 @@ vec4 calculateColor(vec3 hitPoint, int colorID, Light light) {
 	}
 	float brightness = ((light.intensity - distance) / light.intensity);
 	vec4 originalColor = colors[colorID];
-	return vec4(min(1, originalColor.x * brightness), min(1, originalColor.y * brightness), min(1, originalColor.z * brightness), originalColor.w);
+	return vec4(originalColor.x * brightness, originalColor.y * brightness, originalColor.z * brightness, 1);
 }
 
 vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
@@ -160,8 +162,9 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 	//brute force triangle hits
 	float nearestTriangle = FAR_CLIP;
 	int nearestObjectID;
+	vec3 nearestHP = vec3(FAR_CLIP, FAR_CLIP, FAR_CLIP);
 	float rayScalar;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 14; i++) {
 
 		//check if ray hits triangle
 		/*if (triangles[11].pointB.x <= 0.01 && triangles[11].pointB.x >= -0.01) {
@@ -174,8 +177,9 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 		rayScalar = hitTriangle(ray, Triangle(aPoints[i], bPoints[i], cPoints[i]));
 
 		//save scalar to nearest triangle
-		if (rayScalar < nearestTriangle) {
-			nearestTriangle = rayScalar;
+		if (distance(ray.origin, hp)<nearestTriangle) {
+			nearestHP = hp;
+			nearestTriangle = distance(ray.origin, hp);
 			nearestObjectID = i;
 		}
 	}
@@ -183,22 +187,22 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 
 	//if triangle was hit..
 	if (nearestTriangle < FAR_CLIP) {
-		//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		//color = colors[0];
 		//calculate hit point
-		vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
+		//vec3 hitPoint = ray.origin + (rayScalar * ray.direction);
 
 		//create ray to light
-		Ray toLight = Ray(hitPoint, (light.position - hitPoint));
+		Ray toLight = Ray(nearestHP, (light.position - nearestHP));
 
 
 		//brute force triangles to find shadows
 		bool shadow = false;
-		for (int j = 0; j <0; j++) {
+		for (int j = 0; j <14; j++) {
 			float lightScalar = hitTriangle(toLight, Triangle(aPoints[j], bPoints[j], cPoints[j]));
 
 			//if shadow was found then set bool and stop searching for more shadows
-			if (lightScalar < FAR_CLIP) {
+			if (distance(nearestHP, hp) < FAR_CLIP) {
 
 				shadow = true;
 				break;
@@ -206,10 +210,10 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 		}
 		//if light hits point then calculate color
 		if (!shadow) {
-			color = calculateColor(hitPoint, nearestObjectID, light);
+			color = calculateColor(nearestHP, nearestObjectID, light);
 			//color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		}
-		vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		//vec4 tempColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		//calculate reflection ray
 		/*
 		if (reflectionDepth > 0) {
@@ -223,7 +227,7 @@ vec4 traceRay(Ray ray, vec4 color, uint reflectionDepth) {
 }
 
 
-layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in; // work group size = 8
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in; // work group size = 8
 void main()
 {
 	

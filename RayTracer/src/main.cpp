@@ -134,7 +134,7 @@ int main(void)
             25, 27, 26
         };
 
-		light light(glm::vec3(0.0f, 5.0f, 10.0f), 30.0f);
+		light light(glm::vec3(0.0f, 20.0f, 0.0f), 100.0f);
 
         Camera camera(1920, 1080, 90.0f, glm::vec3(0.0f, 0.0f, 0.0f), 
             glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -243,7 +243,7 @@ int main(void)
     // ---
 
         glm::vec3 newViewDir = camera.getViewDirection();
-        glm::vec3 newPos(0.0f, 32.0f, 15.0f);
+        glm::vec3 newPos(0.0f, 0.0f, -15.0f);
         
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -286,8 +286,8 @@ int main(void)
 			cs.SetUniform3f("camera.position", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 			cs.SetUniform3f("camera.direction", camera.getViewDirection().x, camera.getViewDirection().y, camera.getViewDirection().z);
 			//needs to be changed according to view direction
-			cs.SetUniform3f("camera.xAxis", -(camera.getRight().x), camera.getRight().y, camera.getRight().z);
-			cs.SetUniform3f("camera.yAxis", camera.getUp().x, camera.getUp().y, camera.getUp().z);
+			cs.SetUniform3f("camera.xAxis", (camera.getRight().x), camera.getRight().y, camera.getRight().z);
+			cs.SetUniform3f("camera.yAxis", camera.getUp().x, (camera.getUp().y), camera.getUp().z);
 
             textureToRender.Bind();
             aPointSSBO.Bind(1);
@@ -295,9 +295,9 @@ int main(void)
             cPointSSBO.Bind(3);
             colorsSSBO.Bind(4);
 
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-            glDispatchCompute(1920 / 8, 1080 / 8, 1);
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+            //glMemoryBarrier(GL_ALL_BARRIER_BITS);
+            glDispatchCompute(1920 / 16, 1080 / 16, 1);
+            //glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
             /*triangleSSBO.Bind(1);
             Triangle* returnTriangles = (Triangle*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);*/
